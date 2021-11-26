@@ -7,7 +7,12 @@ from public.defaults import Font
 
 
 class StartMenu(MyMenu):
-
+    """
+    Options included:
+    'Fight' - Link to Fight module
+    'Base' - Link to Core Space Military Base, which includes 'Inventory', 'Shop', 'Synthesizing'
+    'Options' - Includes 'Settings', 'Tutorial', 'The Developers'
+    """
     def __init__(self):
         super().__init__()
 
@@ -34,11 +39,13 @@ class StartMenu(MyMenu):
             'dpi': 96,
         }
 
+        # Button items
         items = []
         items.append(MenuItem('·战斗·', self.on_fight))
         items.append(MenuItem('·基地·', self.on_base))
         items.append(MenuItem('·选项·', self.on_options))
 
+        # Button Positions
         positions = [(160, 480), (160, 400), (160, 320)]
 
         # Add the items above to this menu

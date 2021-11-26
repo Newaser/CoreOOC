@@ -65,13 +65,16 @@ class MyMenu(Menu):
             self._select_item(new_idx)
             return True
         else:
-            # send the menu item the rest of the keys
-            ret = self.children[self.selected_index][1].on_key_press(symbol, modifiers)
+            try:
+                # send the menu item the rest of the keys
+                ret = self.children[self.selected_index][1].on_key_press(symbol, modifiers)
 
-            # play sound if key was handled
-            if ret and self.activate_sound:
-                self.activate_sound.play()
-            return ret
+                # play sound if key was handled
+                if ret and self.activate_sound:
+                    self.activate_sound.play()
+                return ret
+            except TypeError:
+                return False
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:

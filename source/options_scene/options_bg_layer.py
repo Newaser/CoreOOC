@@ -1,17 +1,17 @@
 from cocos.layer import Layer
-from pyglet import gl
+from pyglet.gl import *
 
 from public.image import GUI
 
 
-class StartBackgroundLayer(Layer):
+class OptionsBackgroundLayer(Layer):
     def __init__(self):
         super().__init__()
 
         self.img = GUI.background_0
 
     def draw(self):
-        gl.glPushMatrix()
+        glPushMatrix()
         self.transform()
         self.img.blit(0, 0)
-        gl.glPopMatrix()
+        glPopMatrix()

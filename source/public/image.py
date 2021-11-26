@@ -2,15 +2,16 @@ from pyglet import resource
 from pyglet.image import ImageGrid, Animation, load
 
 
-class StartImage:
+class GUI:
     """
     Load images concerning: Start Scene
     """
-    resource.path.append("../res/image/GUI/start_scene")
+    resource.path.append("../res/image/GUI/")
     resource.reindex()
 
     try:
-        background = resource.image("background.png")
+        background_0 = resource.image("background_0.png")
+        background_1 = resource.image("background_1.png")
         logo = resource.image("logo.png")
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)

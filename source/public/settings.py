@@ -1,4 +1,4 @@
-from public.defaults import Settings
+from .defaults import Settings
 from manager.setting_manager import SettingManager
 
 

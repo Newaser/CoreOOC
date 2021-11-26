@@ -1,8 +1,8 @@
 from cocos.actions import *
 
 
-def thump(maxsize=1.05, duration=0.5):
-    scale = ScaleBy(maxsize, duration=duration)
+def thump(maxsize=1.05, cycle=1):
+    scale = ScaleBy(maxsize, duration=cycle/2)
     return Repeat(scale + Reverse(scale))
 
 
