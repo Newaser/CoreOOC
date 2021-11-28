@@ -55,7 +55,7 @@ class _BorderedRectangle(shapes.BorderedRectangle):
                                       [*self._brgb, self._border_opacity] * 4
 
 
-class _Triangle(shapes.Tirangle):
+class _Triangle(shapes.Triangle):
     # TODO
     pass
 
