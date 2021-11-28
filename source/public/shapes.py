@@ -69,10 +69,19 @@ class _Polygon(shapes.Polygon):
     pass
 
 
-_klass_dict = {
+_shape_dict = {
+    'Arc': _Arc,
+    'Circle': _Circle,
+    'Ellipse': _Ellipse,
+    'Sector': _Sector,
     'Line': _Line,
-    'Rect': _BorderedRectangle,
-    'Rectangle': _BorderedRectangle,
+    'Rect': _Rectangle,
+    'Rectangle': _Rectangle,
+    'Bordered Rect': _BorderedRectangle,
+    'Bordered Rectangle': _BorderedRectangle,
+    'Triangle': _Triangle,
+    'Star': _Star,
+    'Polygon': _Polygon,
 }
 
 
@@ -80,7 +89,7 @@ class Shape(CocosNode):
     def __init__(self, shape_name, *args, **kwargs):
         super().__init__()
 
-        self.shape = _klass_dict[shape_name](*args, **kwargs)
+        self.shape = _shape_dict[shape_name](*args, **kwargs)
         self.anchor = self.shape.transform_anchor
 
     def draw(self, *args, **kwargs):

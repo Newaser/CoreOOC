@@ -10,7 +10,7 @@ class ShapeLayer(Layer):
 
         # Rectangle Frame
         rect_frame = Shape(
-            shape_name='Rect',
+            shape_name='Bordered Rect',
             position=(100, 100),
             size=(400, 400),
             border_thickness=10,
