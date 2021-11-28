@@ -3,18 +3,41 @@ from pyglet import gl
 from pyglet import shapes
 
 
-class _ImprovedLine(shapes.Line):
+class _Arc(shapes.Arc):
+    pass
+
+
+class _Circle(shapes.Circle):
+    # TODO
+    pass
+
+
+class _Ellipse(shapes.Ellipse):
+    # TODO
+    pass
+
+
+class _Sector(shapes.Sector):
+    pass
+
+
+class _Line(shapes.Line):
     def __init__(self, start, end, thickness=1, rgba=(255, 255, 255, 255)):
         # Split opacity from RGB
         self._rgb = rgba[:3]
         self._opacity = rgba[3]
 
-        super(_ImprovedLine, self).__init__(*start, *end, thickness, self._rgb)
+        super(_Line, self).__init__(*start, *end, thickness, self._rgb)
 
         self.transform_anchor = (start[0] + end[0]) / 2, (start[1] + end[1]) / 2
 
 
-class _ImprovedBorderedRectangle(shapes.BorderedRectangle):
+class _Rectangle(shapes.Rectangle):
+    # TODO
+    pass
+
+
+class _BorderedRectangle(shapes.BorderedRectangle):
     def __init__(self, position, size, border_thickness=1, body_rgba=(255, 255, 255, 255),
                  border_rgba=(100, 100, 100, 255)):
         # Split opacity from RGB
@@ -32,10 +55,24 @@ class _ImprovedBorderedRectangle(shapes.BorderedRectangle):
                                       [*self._brgb, self._border_opacity] * 4
 
 
+class _Triangle(shapes.Tirangle):
+    # TODO
+    pass
+
+
+class _Star(shapes.Star):
+    # TODO
+    pass
+
+
+class _Polygon(shapes.Polygon):
+    pass
+
+
 _klass_dict = {
-    'Line': _ImprovedLine,
-    'Rect': _ImprovedBorderedRectangle,
-    'Rectangle': _ImprovedBorderedRectangle,
+    'Line': _Line,
+    'Rect': _BorderedRectangle,
+    'Rectangle': _BorderedRectangle,
 }
 
 
