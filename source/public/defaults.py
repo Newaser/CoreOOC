@@ -19,6 +19,7 @@ class Window:
     VSYNC = False
     WIDTH = 1280
     HEIGHT = 720
+    SIZE = WIDTH, HEIGHT
 
 
 class Layers:
@@ -37,7 +38,7 @@ class Settings:
         "left": [key.LEFT],
         "right": [key.RIGHT],
         "OK": [key.ENTER, key.SPACE],
-        "back": [key.ESCAPE],
+        "back": [key.Q],
 
         # In battle
         "battle_up": [key.W],

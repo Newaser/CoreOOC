@@ -3,6 +3,7 @@ from cocos.director import director
 
 from public.defaults import Window
 from start_scene.start_scene import StartScene
+from options_scene.options_scene import OptionScene
 
 
 def run_game():
@@ -24,6 +25,7 @@ def run_game():
                   height=Window.HEIGHT,
                   caption="Core OOC")
     director.run(StartScene())
+    # director.run(OptionScene())
 
 
 if __name__ == '__main__':

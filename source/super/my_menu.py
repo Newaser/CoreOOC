@@ -43,7 +43,7 @@ class MyMenu(Menu):
 
     def on_key_press(self, symbol, modifiers):
         if symbol in key_map["back"]:
-            self.on_exit()
+            # self.on_exit()
             return True
         elif symbol in key_map["OK"]:
             self._activate_item()

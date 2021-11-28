@@ -11,6 +11,7 @@ class GUI:
 
     try:
         background_0 = resource.image("background_0.png")
+        blurred_background_0 = resource.image("blurred_background_0.png")
         background_1 = resource.image("background_1.png")
         logo = resource.image("logo.png")
     except resource.ResourceNotFoundException as e:

@@ -1,11 +1,13 @@
 from cocos.scene import Scene
 
-
-from .start_bg_layer import StartBackgroundLayer
-from .start_component_layer import ComponentLayer
-from .start_menu import StartMenu
-from .shape_layer import ShapeLayer
 from public.defaults import Layers
+
+# Import bottom layer & top layer
+from .start_bg_layer import StartBackgroundLayer
+from .start_menu import StartMenu
+
+# Import other layers
+from .start_component_layer import ComponentLayer
 
 
 class StartScene(Scene):
@@ -18,4 +20,3 @@ class StartScene(Scene):
 
         # Add other layers
         self.add(ComponentLayer())
-        self.add(ShapeLayer())

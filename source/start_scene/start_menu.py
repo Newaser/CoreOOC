@@ -1,7 +1,7 @@
 from cocos.menu import *
 
 from super.my_menu import MyMenu
-
+from options_scene.options_scene import OptionScene
 from public.actions import *
 from public.defaults import Font
 
@@ -54,8 +54,7 @@ class StartMenu(MyMenu):
         # in a short time.
         # :Solution:
         #   Create a class named MutexAction inherited from Action
-        self.create_menu(items, thump(), stop_thump(), shake()+shake_back(),
-                         fixedPositionMenuLayout(positions))
+        self.create_menu(items, thump(), stop_thump(), layout_strategy=fixedPositionMenuLayout(positions))
 
     def on_fight(self):
         pass
@@ -64,4 +63,4 @@ class StartMenu(MyMenu):
         pass
 
     def on_options(self):
-        pass
+        black_field_transition(OptionScene())
