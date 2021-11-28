@@ -21,6 +21,11 @@ class Window:
     HEIGHT = 720
 
 
+class Layers:
+    BOTTOM = -255
+    TOP = 255
+
+
 class Settings:
     """
     Concerning: Settings
