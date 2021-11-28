@@ -39,7 +39,7 @@ class Actor(Sprite):
         self.unify_positions()
 
     def unify_positions(self, towards='phy'):
-        """Update Order: phy_position -> screen_position -> c_position
+        """Unify positions of Physics & Screen & Collision towards one of them.
         """
         if towards == 'phy':
             self.position = tuple(self.phy.x[:])
@@ -65,6 +65,8 @@ class Actor(Sprite):
         self.cshape.rx = size[0]
         self.cshape.ry = size[1]
 
-    unified_position = property(lambda self: tuple(self.phy.x[:]), _set_unified_position)
+    unified_position = property(lambda self: tuple(self.phy.x[:]), _set_unified_position,
+                                doc="Set positions of Physics & Screen & Collision in a row.")
 
-    c_size = property(lambda self: (self.cshape.rx, self.cshape.ry), _set_c_size)
+    c_size = property(lambda self: (self.cshape.rx, self.cshape.ry), _set_c_size,
+                      doc="The size of box collider")
