@@ -3,6 +3,7 @@ from cocos.menu import *
 from pyglet.window import mouse
 
 from public.settings import current_settings
+from public.audio import sound
 
 
 key_map = current_settings["key_map"]
@@ -16,17 +17,20 @@ class MyMenu(Menu):
         self.mouse_pressed = False
 
     def _select_item(self, new_idx):
-        # If 'selected_index' remains uninitialized, init it
-        if self.selected_index is None:
-            if self.select_sound:
-                self.select_sound.play()
+        if new_idx == self.selected_index:
+            return
 
-            self.children[new_idx][1].is_selected = True
-            self.children[new_idx][1].on_selected()
+        if self.selected_index is not None:
+            self.children[self.selected_index][1].is_selected = False
+            self.children[self.selected_index][1].on_unselected()
 
-            self.selected_index = new_idx
+        if self.select_sound:
+            sound.play(self.select_sound)
 
-        super()._select_item(new_idx)
+        self.children[new_idx][1].is_selected = True
+        self.children[new_idx][1].on_selected()
+
+        self.selected_index = new_idx
 
     def _build_items(self, layout_strategy):
         super()._build_items(layout_strategy)
@@ -37,9 +41,16 @@ class MyMenu(Menu):
 
     def _activate_item(self):
         try:
-            super(MyMenu, self)._activate_item()
+            if self.activate_sound:
+                sound.play(self.activate_sound)
+            self.children[self.selected_index][1].on_activated()
+            self.children[self.selected_index][1].on_key_press(key_map["OK"][0], 0)
         except TypeError:
             pass
+
+    def on_enter(self):
+        super().on_enter()
+        self.mouse_pressed = False
 
     def on_key_press(self, symbol, modifiers):
         if symbol in key_map["back"]:
@@ -82,7 +93,6 @@ class MyMenu(Menu):
             try:
                 if self.children[self.selected_index][1].is_inside_box(x, y):
                     self.mouse_pressed = True
-                    self._activate_item()
             except TypeError:
                 pass
 

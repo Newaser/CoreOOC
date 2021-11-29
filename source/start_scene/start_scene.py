@@ -1,6 +1,6 @@
 from cocos.scene import Scene
-
 from public.defaults import Layers
+from public.audio import music
 
 # Import bottom layer & top layer
 from .start_bg_layer import StartBackgroundLayer
@@ -20,3 +20,7 @@ class StartScene(Scene):
 
         # Add other layers
         self.add(ComponentLayer())
+
+    def on_enter(self):
+        super(StartScene, self).on_enter()
+        music.play('mild', 0.1, True)

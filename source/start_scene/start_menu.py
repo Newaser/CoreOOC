@@ -4,6 +4,7 @@ from super.my_menu import MyMenu
 from options_scene.options_scene import OptionScene
 from public.actions import *
 from public.defaults import Font
+from public.audio import music
 
 
 class StartMenu(MyMenu):
@@ -13,6 +14,9 @@ class StartMenu(MyMenu):
     'Base' - Link to Core Space Military Base, which includes 'Inventory', 'Shop', 'Synthesizing'
     'Options' - Includes 'Settings', 'Tutorial', 'The Developers'
     """
+    select_sound = 'button_selected'
+    activate_sound = 'button_activate'
+
     def __init__(self):
         super().__init__()
 
@@ -63,4 +67,6 @@ class StartMenu(MyMenu):
         pass
 
     def on_options(self):
+        music.volume_to(0)
+        # music.volume_mul(0.1)
         black_field_transition(OptionScene())

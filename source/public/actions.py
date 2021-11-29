@@ -25,10 +25,4 @@ def black_field_transition(new_scene=None, duration=0.5):
         except Exception as e:
             raise e
     else:
-        # Create a black field scene
-        black_rgba = 0, 0, 0, 0
-        black_field = ColorLayer(*black_rgba, *Window.SIZE)
-
-        # :Black Field Transition(Only fade-out):
-        # Bug: Cannot perform fade-in effect
-        director.push(FadeTransition(new_scene, duration, black_field))
+        director.push(FadeTransition(new_scene, duration))
