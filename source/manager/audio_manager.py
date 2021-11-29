@@ -95,9 +95,7 @@ class SeniorPlayer(JuniorPlayer):
         elif vol > 1:
             self._player.volume = 1.0
         else:
-            self._player.pause()
-            # self._player.volume = vol
-            # self._player.play()
+            self._player.volume = vol
 
     def volume_add(self, vol):
         if self._player.volume + vol < 0:
