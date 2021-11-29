@@ -1,4 +1,6 @@
 from cocos.draw import *
+from cocos.camera import Camera
+from cocos import euclid
 from pyglet import gl
 from pyglet import shapes
 

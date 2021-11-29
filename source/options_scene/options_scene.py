@@ -1,25 +1,29 @@
 from cocos.scene import Scene
 
-from public.defaults import Layers
+from public.defaults import Z
+from public.audio import music
 
-# Import bottom layer & top layer
+# Import _bottom layer & _top layer
 from .options_bg_layer import OptionsBackgroundLayer
+from .options_menu import OptionsMenu
 
 
 # Import other layers
-from .options_shape_layer import OptionsShapeLayer
-from public.audio import music
+from .options_shape_layers import MainPanelLayer
 
 
 class OptionScene(Scene):
     def __init__(self):
         super(OptionScene, self).__init__()
 
-        # Add bottom layer & top layer
-        self.add(OptionsBackgroundLayer(), z=Layers.BOTTOM)
+        # Add _bottom layer & _top layer
+        self.add(OptionsBackgroundLayer(), z=Z.BOTTOM)
+        menu = OptionsMenu()
+        self.add(menu, z=Z.TOP)
 
         # Add other layers
-        self.add(OptionsShapeLayer())
+        self.add(menu.zm.get_parent(), z=Z.TOP-1)
+        self.add(MainPanelLayer(), z=Z.TOP-2)
 
     def on_enter(self):
         super(OptionScene, self).on_enter()

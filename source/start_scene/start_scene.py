@@ -1,8 +1,8 @@
 from cocos.scene import Scene
-from public.defaults import Layers
+from public.defaults import Z
 from public.audio import music
 
-# Import bottom layer & top layer
+# Import _bottom layer & _top layer
 from .start_bg_layer import StartBackgroundLayer
 from .start_menu import StartMenu
 
@@ -14,9 +14,9 @@ class StartScene(Scene):
     def __init__(self):
         super(StartScene, self).__init__()
 
-        # Add bottom layer & top layer
-        self.add(StartBackgroundLayer(), z=Layers.BOTTOM)
-        self.add(StartMenu(), z=Layers.TOP)
+        # Add _bottom layer & _top layer
+        self.add(StartBackgroundLayer(), z=Z.BOTTOM)
+        self.add(StartMenu(), z=Z.TOP)
 
         # Add other layers
         self.add(ComponentLayer())

@@ -1,13 +1,12 @@
 from cocos.menu import *
 
-from super.my_menu import MyMenu
-from options_scene.options_scene import OptionScene
+from super.menus import VerticalMenu
 from public.actions import *
 from public.defaults import Font
-from public.audio import music
 
+from options_scene.options_scene import OptionScene
 
-class StartMenu(MyMenu):
+class StartMenu(VerticalMenu):
     """
     Options included:
     'Fight' - Link to Fight module
@@ -19,6 +18,8 @@ class StartMenu(MyMenu):
 
     def __init__(self):
         super().__init__()
+        # Can switch menu items circularly
+        self.circular_switch = True
 
         # Set font style
         self.item_font_name = Font.FAMILY_NAME["站酷高端黑"]
@@ -53,11 +54,6 @@ class StartMenu(MyMenu):
         positions = [(160, 480), (160, 400), (160, 320)]
 
         # Add the items above to this menu
-        # :Known bug:
-        #   When an item's 'activated_effect' is set to 'shake()', it can rotate by a large angle with multiple clicks
-        # in a short time.
-        # :Solution:
-        #   Create a class named MutexAction inherited from Action
         self.create_menu(items, thump(), stop_thump(), layout_strategy=fixedPositionMenuLayout(positions))
 
     def on_fight(self):
@@ -67,6 +63,4 @@ class StartMenu(MyMenu):
         pass
 
     def on_options(self):
-        music.volume_to(0)
-        # music.volume_mul(0.1)
         black_field_transition(OptionScene())

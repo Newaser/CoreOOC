@@ -22,7 +22,7 @@ class Window:
     SIZE = WIDTH, HEIGHT
 
 
-class Layers:
+class Z:
     BOTTOM = -255
     TOP = 255
 
