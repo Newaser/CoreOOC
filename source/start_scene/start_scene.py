@@ -1,3 +1,4 @@
+import pyglet.event
 from cocos.scene import Scene
 from public.defaults import Z
 from public.audio import music
@@ -23,4 +24,5 @@ class StartScene(Scene):
 
     def on_enter(self):
         super(StartScene, self).on_enter()
+
         music.play('mild', 0.1, True)

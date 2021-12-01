@@ -4,7 +4,9 @@ from super.menus import VerticalMenu
 from public.actions import *
 from public.defaults import Font
 
+from inventory_scene.inventory_scene import InventoryScene
 from options_scene.options_scene import OptionScene
+
 
 class StartMenu(VerticalMenu):
     """
@@ -46,9 +48,9 @@ class StartMenu(VerticalMenu):
 
         # Button items
         items = []
-        items.append(MenuItem('·战斗·', self.on_fight))
-        items.append(MenuItem('·基地·', self.on_base))
-        items.append(MenuItem('·选项·', self.on_options))
+        items.append(MenuItem('·战斗·', on_fight))
+        items.append(MenuItem('·基地·', on_base))
+        items.append(MenuItem('·选项·', on_options))
 
         # Button Positions
         positions = [(160, 480), (160, 400), (160, 320)]
@@ -56,11 +58,14 @@ class StartMenu(VerticalMenu):
         # Add the items above to this menu
         self.create_menu(items, thump(), stop_thump(), layout_strategy=fixedPositionMenuLayout(positions))
 
-    def on_fight(self):
-        pass
 
-    def on_base(self):
-        pass
+def on_fight():
+    pass
 
-    def on_options(self):
-        black_field_transition(OptionScene())
+
+def on_base():
+    black_field_transition(InventoryScene())
+
+
+def on_options():
+    black_field_transition(OptionScene())

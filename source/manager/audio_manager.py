@@ -30,6 +30,9 @@ class SeniorPlayer(JuniorPlayer):
         # Create a music player
         self._player = media.Player()
 
+        # Record the playing source name
+        self._source_name = None
+
     def play(self, name=None, volume=None, loop=None):
         # TODO: Add more senior functions, such as min_distance, max_distance,  pitch, on_player_eos(), etc.
         """
@@ -61,11 +64,13 @@ class SeniorPlayer(JuniorPlayer):
             except Exception as e:
                 raise e
         elif name in self._name_list:
-            if self._resources[name] == self._player.source:
+            if name == self._source_name:
                 return
             else:
-                self._player.delete()
                 self._player.queue(self._resources[name])
+                if self._source_name is not None:
+                    self._player.next_source()
+                self._source_name = name
                 self._player.play()
         else:
             raise ValueError("No such music resource: " + name)

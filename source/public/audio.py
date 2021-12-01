@@ -8,5 +8,5 @@ sound = _JP(_sound_path, _sound_list)
 
 # Music resources
 _music_path = "../res/music"
-_music_list = ['impassioned', 'mild']
+_music_list = ['impassioned', 'mild', 'going_deep']
 music = _SP(_music_path, _music_list)

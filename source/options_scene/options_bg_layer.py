@@ -22,7 +22,3 @@ class OptionsBackgroundLayer(Layer):
         self.transform()
         self.img.blit(0, 0)
         glPopMatrix()
-
-    def on_key_press(self, symbol, _):
-        if symbol in key_map['back']:
-            black_field_transition()

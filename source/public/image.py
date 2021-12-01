@@ -4,7 +4,7 @@ from pyglet.image import ImageGrid, Animation, load
 
 class GUI:
     """
-    Load images concerning: Start Scene
+    Load images concerning: GUI
     """
     resource.path.append("../res/image/GUI/")
     resource.reindex()
@@ -14,5 +14,17 @@ class GUI:
         blurred_background_0 = resource.image("blurred_background_0.png")
         background_1 = resource.image("background_1.png")
         logo = resource.image("logo.png")
+        slot = resource.image("slot.png")
+    except resource.ResourceNotFoundException as e:
+        raise SystemExit(e)
+
+
+class Items:
+    resource.path.append("../res/image/items/")
+    resource.reindex()
+
+    try:
+        # TODO: Add item icons
+        pass
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)

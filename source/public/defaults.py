@@ -15,7 +15,7 @@ class Window:
     Concerning: Window
     """
     FULLSCREEN = False
-    RESIZABLE = True
+    RESIZABLE = False
     VSYNC = False
     WIDTH = 1280
     HEIGHT = 720

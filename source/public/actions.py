@@ -22,8 +22,17 @@ def stop_highlight():
     return ScaleTo(1, duration=0)
 
 
-# def text_highlight(text, maxsize=1.05, fade=200)
-#     new_text = deepcopy(text)
+class FadeBy(FadeTo):
+    def init(self, times, duration):
+        super(FadeBy, self).init(None, duration)
+
+        self.times = times
+
+    def start(self):
+        super(FadeBy, self).start()
+
+        self.alpha = self.target.opacity * self.times
+        assert 0 <= self.alpha <= 255
 
 
 def black_field_transition(new_scene=None, duration=0.5):
