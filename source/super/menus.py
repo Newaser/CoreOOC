@@ -1,3 +1,4 @@
+from cocos.director import director
 from cocos.menu import *
 from pyglet.window import mouse
 

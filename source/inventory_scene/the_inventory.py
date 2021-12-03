@@ -5,6 +5,7 @@ from super.inventory import CardInventory
 from public.defaults import Window
 from public.image import GUI
 from public.actions import *
+from public.transitions import black_field_transition
 
 
 class TheInventory(CardInventory):
@@ -31,8 +32,9 @@ class TheInventory(CardInventory):
         self.create_inventory(slot_style)
 
         self.text = Label(
-            font_size=32,
+            font_size=22,
         )
+        self.text.position = 0, 10
         self.add(self.text)
 
     def on_mouse_motion(self, x, y, dx, dy):

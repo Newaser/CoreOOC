@@ -1,9 +1,9 @@
 from cocos.menu import MenuItem, fixedPositionMenuLayout
-from cocos.actions import CallFunc
 
 from super.menus import HorizontalMenu
 from manager.z_manager import ZManager
 from public.actions import *
+from public.transitions import black_field_transition
 from public.defaults import Font
 from public.audio import sound
 

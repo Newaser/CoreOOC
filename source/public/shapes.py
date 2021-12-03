@@ -1,6 +1,4 @@
-from cocos.draw import *
-from cocos.camera import Camera
-from cocos import euclid
+from cocos.cocosnode import CocosNode
 from pyglet import gl
 from pyglet import shapes
 
@@ -33,6 +31,18 @@ class _Line(shapes.Line):
 
         self.transform_anchor = (start[0] + end[0]) / 2, (start[1] + end[1]) / 2
 
+    def _set_color(self, rgb):
+        self._rgb = rgb
+        self._update_color()
+
+    color = property(lambda self: self._rgb, _set_color)
+
+    def _set_opacity(self, opacity):
+        self._opacity = opacity
+        self._update_color()
+
+    opacity = property(lambda self: self._opacity, _set_opacity)
+
 
 class _Rectangle(shapes.Rectangle):
     # TODO
@@ -45,7 +55,7 @@ class _BorderedRectangle(shapes.BorderedRectangle):
         # Split opacity from RGB
         self._body_rgb = body_rgba[:3]
         self._border_rgb = border_rgba[:3]
-        self._opacity = body_rgba[3]
+        self._body_opacity = body_rgba[3]
         self._border_opacity = border_rgba[3]
 
         super().__init__(*position, *size, border_thickness, self._body_rgb, self._border_rgb)
@@ -53,8 +63,34 @@ class _BorderedRectangle(shapes.BorderedRectangle):
         self.transform_anchor = self.x + self.width / 2, self.y + self.height / 2
 
     def _update_color(self):
-        self._vertex_list.colors[:] = [*self._rgb, self._opacity] * 4 + \
-                                      [*self._brgb, self._border_opacity] * 4
+        float_rgba = [*self._body_rgb, self._body_opacity] * 4 + \
+                                      [*self._border_rgb, self._border_opacity] * 4
+
+        self._vertex_list.colors[:] = [int(i) for i in float_rgba]
+
+    def _set_body_color(self, rgb):
+        self._body_rgb = rgb
+        self._update_color()
+
+    color = property(lambda self: self._body_rgb, _set_body_color)
+
+    def _set_body_opacity(self, opacity):
+        self._body_opacity = opacity
+        self._update_color()
+        
+    opacity = property(lambda self: self._body_opacity, _set_body_opacity)
+
+    def _set_border_color(self, rgb):
+        self._border_rgb = rgb
+        self._update_color()
+
+    border_color = property(lambda self: self._border_rgb, _set_border_color)
+
+    def _set_border_opacity(self, opacity):
+        self._border_opacity = opacity
+        self._update_color()
+
+    border_opacity = property(lambda self: self._border_opacity, _set_border_opacity)
 
 
 class _Triangle(shapes.Triangle):
@@ -79,11 +115,14 @@ _shape_dict = {
     'Line': _Line,
     'Rect': _Rectangle,
     'Rectangle': _Rectangle,
-    'Bordered Rect': _BorderedRectangle,
-    'Bordered Rectangle': _BorderedRectangle,
     'Triangle': _Triangle,
     'Star': _Star,
     'Polygon': _Polygon,
+}
+
+_bordered_dict = {
+    'Rect': _BorderedRectangle,
+    'Rectangle': _BorderedRectangle,
 }
 
 
@@ -99,6 +138,34 @@ class Shape(CocosNode):
         self.transform()
         self.shape.draw()
         gl.glPopMatrix()
+
+    def _set_color(self, rgb):
+        self.shape.color = rgb
+
+    color = property(lambda self: self.shape.color, _set_color)
+
+    def _set_opacity(self, opacity):
+        self.shape.opacity = opacity
+
+    opacity = property(lambda self: self.shape.opacity, _set_opacity)
+
+
+class BorderedShape(Shape):
+    def __init__(self, shape_name, *args, **kwargs):
+        super(Shape, self).__init__()
+
+        self.shape = _bordered_dict[shape_name](*args, **kwargs)
+        self.anchor = self.shape.transform_anchor
+
+    def _set_border_color(self, rgb):
+        self.shape.border_color = rgb
+
+    border_color = property(lambda self: self.shape.border_color, _set_border_color)
+
+    def _set_border_opacity(self, opacity):
+        self.shape.border_opacity = opacity
+
+    border_opacity = property(lambda self: self.shape.border_opacity, _set_border_opacity)
 
 
 

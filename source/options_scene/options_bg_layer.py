@@ -1,7 +1,7 @@
 from cocos.layer import Layer
 from pyglet.gl import *
 
-from public.actions import black_field_transition
+from public.transitions import black_field_transition
 from public.image import GUI
 from public.settings import current_settings
 

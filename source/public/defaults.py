@@ -7,6 +7,7 @@ class Font:
         "楷体": "KaiTi",
         "庞门正道粗书体6.0": "PangMenZhengDao-Cu6.0",
         "站酷高端黑": "huxiaobo-gdh",
+        '汉仪南宫体简': 'HYNanGongJ',
     }
 
 

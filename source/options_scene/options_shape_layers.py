@@ -1,5 +1,5 @@
 from cocos.layer import Layer
-from public.shapes import Shape
+from public.shapes import BorderedShape
 
 
 class MainPanelLayer(Layer):
@@ -7,8 +7,8 @@ class MainPanelLayer(Layer):
         super(MainPanelLayer, self).__init__()
 
         # Main panel & its rect wireframe
-        self.body = Shape(
-            shape_name='Bordered Rect',
+        self.body = BorderedShape(
+            shape_name='Rect',
             position=(170, 105),
             size=(900, 510),
             border_thickness=5,
@@ -16,8 +16,8 @@ class MainPanelLayer(Layer):
             border_rgba=(218, 165, 32, 211)
         )
         self.margin = 10
-        self.wireframe = Shape(
-            shape_name='Bordered Rect',
+        self.wireframe = BorderedShape(
+            shape_name='Rect',
             position=(170 + self.margin, 105 + self.margin),
             size=(900 - 2 * self.margin, 510 - 2 * self.margin),
             border_thickness=3,
@@ -34,8 +34,8 @@ class UpBarLayer(Layer):
 
         # Add up bars
         for i in range(3):
-            up_bar = Shape(
-                shape_name='Bordered Rect',
+            up_bar = BorderedShape(
+                shape_name='Rect',
                 position=(170 + i * 300, 615),
                 size=(300, 45),
                 border_thickness=6,

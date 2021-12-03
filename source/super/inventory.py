@@ -7,9 +7,11 @@ from cocos.sprite import Sprite
 from cocos.rect import Rect
 from pyglet.window import mouse
 
+from .card import Card
+
 from public.image import Items
-from public.shapes import Shape
 from public.settings import current_settings
+from public.defaults import Z
 
 
 class Inventory(Layer):
@@ -28,7 +30,7 @@ class Inventory(Layer):
         # About layout
         self.number = 1
         self.max_column = 1
-        self.margin = (0, 0)
+        self.spacing = (0, 0)
         self.start_position = (0, 0)
 
         # Rows & Size cannot be assigned currently
@@ -66,8 +68,8 @@ class Inventory(Layer):
             slot.image_anchor = 0, 0
 
             x, y = self.start_position
-            x += i % self.max_column * slot.width + sign(i) * self.margin[0]  # X-coordinate
-            y -= i // self.max_column * slot.height + sign(i) * self.margin[1] + slot.height  # Y-coordinate
+            x += i % self.max_column * slot.width + sign(i) * self.spacing[0]  # X-coordinate
+            y -= i // self.max_column * slot.height + sign(i) * self.spacing[1] + slot.height  # Y-coordinate
             slot.position = x, y
 
             self.slot_batch.add(slot)
@@ -125,13 +127,17 @@ class Inventory(Layer):
         # TODO: Update arrangement of items by remove all items and re-add all items according to item list
         pass
 
+    def _get_item_info(self, idx):
+        # TODO: Get the info of item with index 'idx'
+        pass
+
     def on_enter(self):
         super(Inventory, self).on_enter()
 
         # Calculate the rows and size
         self.rows = self.number // self.max_column
-        self.width = self.slots[0].width * self.max_column + self.margin[0] * (self.number - 1)
-        self.height = self.slots[0].height * self.rows + self.margin[1] * (self.number - 1)
+        self.width = self.slots[0].width * self.max_column + self.spacing[0] * (self.number - 1)
+        self.height = self.slots[0].height * self.rows + self.spacing[1] * (self.number - 1)
 
         # Reset
         self._unselect_slot()
@@ -159,7 +165,7 @@ class Inventory(Layer):
             self._select_slot(idx2)
 
     def on_mouse_release(self, x, y, button, _):
-        if not button == mouse.LEFT:
+        if button not in (mouse.LEFT, mouse.RIGHT):
             return
 
         in_areas, idx = self._in_any_area((x, y))
@@ -178,28 +184,23 @@ class CardInventory(Inventory):
         super(CardInventory, self).__init__()
 
         # Create a option card
-        self.card = Shape(
-            shape_name='Bordered Rect',
-            position=(0, 0),
-            size=(160, 225),
-            border_thickness=2,
-            body_rgba=(0, 0, 0, 178),
-            border_rgba=(0, 0, 0, 255)
-        )
-        self.card_open = False
+        self.card = Card(('查看', '装上', '出售'))
+        self.add(self.card, z=Z.TOP)
 
-    def _card_move_to(self, position):
+    def _card_move_to(self, position, idx):
         # Card move
         self.card.position = position
 
-        if not self.card_open:
-            self.add(self.card)
-            self.card_open = True
+        self.card.is_open = True
 
     def _card_remove(self):
-        if self.card_open:
-            self.card.kill()
-            self.card_open = False
+        self.card.is_open = False
+
+    def _in_card(self, point):
+        if not self.card.is_open:
+            return False
+        card_box = Rect(*self.card.position, *self.card.size)
+        return card_box.contains(*point)
 
     def on_enter(self):
         super(CardInventory, self).on_enter()
@@ -212,9 +213,9 @@ class CardInventory(Inventory):
 
         case = {
             '1': in_new_area,
-            '2': in_the_same_area and not self.card_open,
-            '3': in_the_same_area and self.card_open,
-            '4': not in_the_same_area and self.card_open,
+            '2': in_the_same_area and not self.card.is_open,
+            '3': in_the_same_area and self.card.is_open,
+            '4': not in_the_same_area and self.card.is_open,
         }
 
         if case['1'] or case['2'] or case['4']:
@@ -222,10 +223,10 @@ class CardInventory(Inventory):
             super(CardInventory, self)._activate_slot(idx)
 
             x = click_position[0] - \
-                (click_position[0] > self.start_position[0] + self.width / 2) * self.card.shape.width
+                (click_position[0] > self.start_position[0] + self.width / 2) * self.card.body.shape.width
             y = click_position[1] - \
-                (click_position[1] > self.start_position[1] - self.height / 2) * self.card.shape.height
-            self._card_move_to((x, y))
+                (click_position[1] > self.start_position[1] - self.height / 2) * self.card.body.shape.height
+            self._card_move_to((x, y), idx)
 
         elif case['3']:
             self._inactivate_slot()
@@ -233,6 +234,18 @@ class CardInventory(Inventory):
     def _inactivate_slot(self, click_position=None):
         super(CardInventory, self)._inactivate_slot()
         self._card_remove()
+
+    activated_slot = property(fdel=_inactivate_slot)
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self._in_card((x, y)):
+            return 
+        super(CardInventory, self).on_mouse_motion(x, y, dx, dy)
+        
+    def on_mouse_release(self, x, y, button, _):
+        if self._in_card((x, y)):
+            return
+        super(CardInventory, self).on_mouse_release(x, y, button, _)
 
 
 class Slot(Sprite):

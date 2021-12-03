@@ -1,8 +1,5 @@
-from copy import deepcopy
-
-from cocos.director import director
-from cocos.scenes import FadeTransition
 from cocos.actions import *
+from cocos.euclid import Vector3
 
 
 def thump(maxsize=1.05, cycle=1):
@@ -22,25 +19,70 @@ def stop_highlight():
     return ScaleTo(1, duration=0)
 
 
-class FadeBy(FadeTo):
-    def init(self, times, duration):
-        super(FadeBy, self).init(None, duration)
+class ShapeGraduateTo(IntervalAction):
+    def init(self, rgb, duration, obj='body'):
+        self.rgb = Vector3(*rgb)
+        self.duration = duration
+        self.obj = obj
 
-        self.times = times
+        assert obj in ('body', 'border')
 
     def start(self):
-        super(FadeBy, self).start()
+        which = {'body': self.target.color,
+                 'border': self.target.border_color}[self.obj]
+        self.start_rgb = Vector3(*which)
+        self.gradient = self.rgb - self.start_rgb
 
-        self.alpha = self.target.opacity * self.times
-        assert 0 <= self.alpha <= 255
+    def update(self, t):
+        temp_rgb = tuple((self.start_rgb + self.gradient * t)[:])
+        if self.obj == 'body':
+            self.target.color = temp_rgb
+        else:
+            self.target.border_color = temp_rgb
 
 
-def black_field_transition(new_scene=None, duration=0.5):
-    if new_scene is None:
-        try:
-            director.pop()
-        except Exception as e:
-            raise e
-    else:
-        director.push(FadeTransition(new_scene, duration))
-        # director.push(new_scene)
+class ShapeFadeTo(IntervalAction):
+    def init(self, alpha, duration, obj='body'):
+        self.alpha = alpha
+        self.duration = duration
+        self.obj = obj
+
+        assert obj in ('body', 'border')
+
+    def start(self):
+        self.start_alpha = {'body': self.target.opacity,
+                            'border': self.target.border_opacity}[self.obj]
+
+    def update(self, t):
+        temp_alpha = self.start_alpha + (
+            self.alpha - self.start_alpha) * t
+
+        if self.obj == 'body':
+            self.target.opacity = temp_alpha
+        else:
+            self.target.border_opacity = temp_alpha
+
+
+class ShapeFadeBy(IntervalAction):
+    def init(self, times, duration, obj='body'):
+        self.times = times
+        self.duration = duration
+        self.obj = obj
+
+        assert obj in ('body', 'border')
+
+    def start(self):
+        self.start_alpha = {'body': self.target.opacity,
+                            'border': self.target.border_opacity}[self.obj]
+        self.end_alpha = int(self.obj * self.times)
+
+        assert 0 <= self.end_alpha <= 255
+
+    def update(self, t):
+        temp_alpha = self.start_alpha + (
+            self.end_alpha - self.start_alpha) * t
+
+        if self.obj == 'body':
+            self.target.opacity = temp_alpha
+        else:
+            self.target.border_opacity = temp_alpha
