@@ -3,7 +3,7 @@ from cocos.menu import MenuItem, fixedPositionMenuLayout
 
 from .text_menus import VerticalMenu
 from public.actions import *
-from public.defaults import Font
+from public.defaults import Font, Z
 from public.shapes import BorderedShape
 
 
@@ -46,7 +46,7 @@ class Card(CocosNode):
 
     def open(self):
         if self.body not in self.get_children():
-            self.add(self.body)
+            self.add(self.body, z=Z.TOP)
 
     def close(self):
         if self.body in self.get_children():

@@ -13,7 +13,7 @@ class CategoryMenu(GraphicalMenu):
         super(CategoryMenu, self).__init__()
 
         # Set sounds & effects
-        self.sounds['activated'] = 'button_activate'
+        self.sounds['activated'] = 'shrill_page_slide'
         self.effects = {
             "selected": FadeTo(230, 0),
             "unselected": FadeTo(255, 0),

@@ -8,9 +8,11 @@ from pyglet.window import mouse
 
 from .card import Card
 from public.defaults import Z
-from public.image import Items
 from public.settings import current_settings
 from public.transitions import black_field_transition
+
+# Trial
+from public.virtual_db import my_items
 
 
 class Inventory(Layer):
@@ -124,7 +126,10 @@ class Inventory(Layer):
 
     def _update_items(self):
         # TODO: Update arrangement of items by remove all items and re-add all items according to item list
-        pass
+        for idx, data in enumerate(my_items):
+            item = Sprite(data['image'])
+            item.position = self.slots[idx].point_to_world((33.5, 46.5))
+            self.slots[idx].add(item)
 
     def _get_item_info(self, idx):
         # TODO: Get the info of item with index 'idx'
@@ -279,6 +284,9 @@ class Slot(Sprite):
 
             self.stop()
             self.do(self.selected_effect)
+            for child in self.get_children():
+                child.stop()
+                child.do(self.selected_effect)
 
             self.image_anchor = temp
 
@@ -292,6 +300,9 @@ class Slot(Sprite):
 
             self.stop()
             self.do(self.unselected_effect)
+            for child in self.get_children():
+                child.stop()
+                child.do(self.unselected_effect)
 
             self.image_anchor = temp
 
@@ -302,6 +313,9 @@ class Slot(Sprite):
 
             self.stop()
             self.do(self.activated_effect)
+            for child in self.get_children():
+                child.stop()
+                child.do(self.activated_effect)
 
             self.image_anchor = temp
 
@@ -312,5 +326,8 @@ class Slot(Sprite):
 
             self.stop()
             self.do(self.inactivated_effect)
+            for child in self.get_children():
+                child.stop()
+                child.do(self.inactivated_effect)
 
             self.image_anchor = temp

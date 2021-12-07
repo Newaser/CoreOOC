@@ -29,7 +29,9 @@ class Items:
     resource.reindex()
 
     try:
-        # TODO: Add item icons
-        pass
+        _equipment_set = resource.image("equipments.png")
+        _chest_set = resource.image("chests.png")
+        equipments = ImageGrid(_equipment_set, 1, 5)
+        chests = ImageGrid(_chest_set, 1, 4)
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
