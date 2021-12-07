@@ -1,20 +1,20 @@
 from cocos.cocosnode import CocosNode
 from cocos.menu import MenuItem, fixedPositionMenuLayout
 
-from .menus import VerticalMenu
+from .text_menus import VerticalMenu
 from public.actions import *
 from public.defaults import Font
 from public.shapes import BorderedShape
 
 
 class Card(CocosNode):
-    def __init__(self, options):
+    def __init__(self, *options):
         super(Card, self).__init__()
 
         # Number of items
         self.number = len(options)
 
-        # The spacing between frame and frame or between frame and body
+        # The spacings between frame and frame or between frame and body
         self.spacing = 13
 
         self.size = 160, 40 * self.number + self.spacing * (self.number + 1)
@@ -69,6 +69,7 @@ class CardMenu(VerticalMenu):
 
         # Option name -> Menu Item
         self._option_dict = {
+            '': MenuItem('', None),
             '查看': MenuItem('查看', self.on_check),
             '出售': MenuItem('出售', self.on_sell),
             '装上': MenuItem('装上', self.on_install),

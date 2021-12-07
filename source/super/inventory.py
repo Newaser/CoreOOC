@@ -1,5 +1,4 @@
 from copy import copy
-from numpy import sign
 
 from cocos.layer import Layer
 from cocos.batch import BatchNode
@@ -20,10 +19,10 @@ class Inventory(Layer):
     def __init__(self):
         super(Inventory, self).__init__()
 
-        # Create a batch to manage slots
+        # Create a batch to manage items
         self.slot_batch = BatchNode()
 
-        # Create lists to point to slots and its attributes
+        # Create lists to point to items and its attributes
         self.slots = []
         self.valid_areas = []
 
@@ -58,23 +57,23 @@ class Inventory(Layer):
         self._build_slots(slot_style)
 
     def _build_slots(self, slot_style):
-        # Create a batch to manage slots
+        # Create a batch to manage items
         self.slot_batch = BatchNode()
         self.add(self.slot_batch)
 
-        # Add slots to the batch
+        # Add items to the batch
         for i in range(self.number):
             slot = Slot(**slot_style)
             slot.image_anchor = 0, 0
 
             x, y = self.start_position
-            x += i % self.max_column * slot.width + sign(i) * self.spacing[0]  # X-coordinate
-            y -= i // self.max_column * slot.height + sign(i) * self.spacing[1] + slot.height  # Y-coordinate
+            x += i % self.max_column * slot.width + i * self.spacing[0]  # X-coordinate
+            y -= i // self.max_column * slot.height + i * self.spacing[1] + slot.height  # Y-coordinate
             slot.position = x, y
 
             self.slot_batch.add(slot)
 
-        # Fill the list pointing to slots
+        # Fill the list pointing to items
         self.slots = self.slot_batch.get_children()
 
         # Fill valid area list with the coordinate to world
@@ -164,7 +163,7 @@ class Inventory(Layer):
             self._unselect_slot()
             self._select_slot(idx2)
 
-    def on_mouse_release(self, x, y, button, _):
+    def on_mouse_release(self, x, y, button, modifier):
         if button not in (mouse.LEFT, mouse.RIGHT):
             return
 
@@ -184,8 +183,7 @@ class CardInventory(Inventory):
         super(CardInventory, self).__init__()
 
         # Create a option card
-        self.card = Card(('查看', '装上', '出售'))
-        self.add(self.card, z=Z.TOP)
+        self.card = Card('')
 
     def _card_move_to(self, position, idx):
         # Card move
@@ -205,6 +203,7 @@ class CardInventory(Inventory):
     def on_enter(self):
         super(CardInventory, self).on_enter()
 
+        self.add(self.card, z=Z.TOP)
         self._card_remove()
 
     def _activate_slot(self, idx, click_position=None):

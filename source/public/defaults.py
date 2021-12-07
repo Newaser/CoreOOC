@@ -1,4 +1,8 @@
 from pyglet.window import key
+from cocos.rect import Rect
+
+from .actions import *
+from .image import GUI
 
 
 class Font:
@@ -58,3 +62,14 @@ class Settings:
     DEFAULT_SETTINGS = {
         "key_map": KEY_MAP
     }
+
+
+class Styles:
+    slot = {
+            "image": GUI.slot,
+            "valid_area": Rect(0, 80 - 67, 67, 67),
+            "selected_effect": FadeTo(200, 0),
+            "unselected_effect": FadeTo(255, 0),
+            "activated_effect": FadeTo(150, 0) + highlight(),
+            "inactivated_effect": stop_highlight() + FadeTo(255, 0),
+        }

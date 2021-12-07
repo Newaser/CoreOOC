@@ -15,6 +15,11 @@ class GUI:
         background_1 = resource.image("background_1.png")
         logo = resource.image("logo.png")
         slot = resource.image("slot.png")
+        shield = resource.image("shield.png")
+        iron_nuggets = resource.image("iron_nuggets.png")
+        blueprint = resource.image("blueprint.png")
+        chest = resource.image("chest.png")
+
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
 

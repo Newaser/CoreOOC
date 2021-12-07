@@ -7,7 +7,8 @@ from public.audio import music
 from .inventory_bg_layer import InventoryBackgroundLayer
 
 # Import other layers
-from .the_inventory import TheInventory
+from .category_menu import CategoryMenu
+from .inventories import *
 
 
 class InventoryScene(Scene):
@@ -18,7 +19,8 @@ class InventoryScene(Scene):
         self.add(InventoryBackgroundLayer(), z=Z.BOTTOM)
 
         # Add other layers
-        self.add(TheInventory(), z=Z.TOP-1)
+        self.add(CategoryMenu(), z=Z.TOP-2)
+        self.add(EquipmentInventory(), z=Z.TOP-1)
 
     def on_enter(self):
         super(InventoryScene, self).on_enter()
