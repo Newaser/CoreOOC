@@ -8,7 +8,7 @@ from .inventory_bg_layer import InventoryBackgroundLayer
 
 # Import other layers
 from .category_menu import CategoryMenu
-from .inventories import *
+# from .inventories import *
 
 
 class InventoryScene(Scene):
@@ -20,7 +20,7 @@ class InventoryScene(Scene):
 
         # Add other layers
         self.add(CategoryMenu(), z=Z.TOP-2)
-        self.add(EquipmentInventory(), z=Z.TOP-1)
+        # self.add(EquipmentInventory(), z=Z.TOP-1)
 
     def on_enter(self):
         super(InventoryScene, self).on_enter()

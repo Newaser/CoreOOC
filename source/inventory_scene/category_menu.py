@@ -1,3 +1,6 @@
+from cocos.layer import MultiplexLayer
+
+from .inventories import *
 from public.actions import *
 from public.defaults import Window
 from public.image import GUI
@@ -36,6 +39,15 @@ class CategoryMenu(GraphicalMenu):
         # Create the menu
         self.create_menu()
 
+        # Add multi-inventories to the menu
+        self.inventories = MultiplexLayer(
+            EquipmentInventory(),
+            MaterialInventory(),
+            BlueprintInventory(),
+            ChestInventory()
+        )
+        self.add(self.inventories)
+
     def on_enter(self):
         super(CategoryMenu, self).on_enter()
         self.on_equipment()
@@ -44,13 +56,13 @@ class CategoryMenu(GraphicalMenu):
         black_field_transition()
 
     def on_equipment(self):
-        pass
+        self.inventories.switch_to(0)
 
     def on_material(self):
-        pass
+        self.inventories.switch_to(1)
 
     def on_blueprint(self):
-        pass
+        self.inventories.switch_to(2)
 
     def on_package(self):
-        pass
+        self.inventories.switch_to(3)

@@ -7,10 +7,10 @@ from cocos.rect import Rect
 from pyglet.window import mouse
 
 from .card import Card
-
+from public.defaults import Z
 from public.image import Items
 from public.settings import current_settings
-from public.defaults import Z
+from public.transitions import black_field_transition
 
 
 class Inventory(Layer):
@@ -175,7 +175,7 @@ class Inventory(Layer):
             self._inactivate_slot((x, y))
 
     def on_quit(self):
-        pass
+        black_field_transition()
 
 
 class CardInventory(Inventory):
