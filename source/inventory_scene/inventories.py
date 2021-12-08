@@ -6,6 +6,9 @@ class EquipmentInventory(CardInventory):
     def __init__(self):
         super(EquipmentInventory, self).__init__()
 
+        # Category
+        self.category = 'equipment'
+
         # Init layout
         self.number = 15
         self.rows = 3
@@ -22,6 +25,9 @@ class EquipmentInventory(CardInventory):
 class MaterialInventory(CardInventory):
     def __init__(self):
         super(MaterialInventory, self).__init__()
+
+        # Category
+        self.category = 'material'
 
         # Init layout
         self.number = 16
@@ -40,6 +46,9 @@ class BlueprintInventory(CardInventory):
     def __init__(self):
         super(BlueprintInventory, self).__init__()
 
+        # Category
+        self.category = 'blueprint'
+
         # Init layout
         self.number = 17
         self.rows = 3
@@ -56,6 +65,9 @@ class BlueprintInventory(CardInventory):
 class ChestInventory(CardInventory):
     def __init__(self):
         super(ChestInventory, self).__init__()
+
+        # Category
+        self.category = 'chest'
 
         # Init layout
         self.number = 18

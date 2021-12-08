@@ -2,6 +2,7 @@ from pyglet import font
 from cocos.director import director
 
 from start_scene.start_scene import StartScene
+from test_scene.test_scene import TestScene
 from public.defaults import Window
 
 
@@ -21,7 +22,8 @@ def run_game():
                   height=Window.HEIGHT,
                   caption="Core OOC"
                   )
-    director.run(StartScene())
+    # director.run(StartScene())
+    director.run(TestScene())
 
 
 if __name__ == '__main__':

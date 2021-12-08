@@ -42,4 +42,20 @@ _item3 = {
     'image': Items.chests[0],
 }
 
-my_items = [_item1, _item2, _item3]
+# my_items = [_item1, _item2, _item3]
+
+my_items = []
+for i in range(5):
+    item = {'category': 'equipment', 'image': Items.equipments[i], 'test': i}
+    my_items.append(item)
+
+for i in range(6):
+    item = {'category': 'material', 'image': Items.metals[i]}
+    my_items.append(item)
+
+for i in range(4):
+    item = {'category': 'chest', 'image': Items.chests[i]}
+    my_items.append(item)
+
+# for item in my_items:
+#     print(item)

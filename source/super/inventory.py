@@ -20,6 +20,8 @@ class Inventory(Layer):
 
     def __init__(self):
         super(Inventory, self).__init__()
+        # What kind of items in the inventory
+        self.category = None
 
         # Create a batch to manage items
         self.slot_batch = BatchNode()
@@ -126,10 +128,13 @@ class Inventory(Layer):
 
     def _update_items(self):
         # TODO: Update arrangement of items by remove all items and re-add all items according to item list
-        for idx, data in enumerate(my_items):
-            item = Sprite(data['image'])
-            item.position = self.slots[idx].point_to_world((33.5, 46.5))
-            self.slots[idx].add(item)
+        idx = 0
+        for data in my_items:
+            if data['category'] == self.category:
+                item = Sprite(data['image'])
+                item.position = self.slots[idx].point_to_world((33.5, 46.5))
+                self.slots[idx].add(item)
+                idx += 1
 
     def _get_item_info(self, idx):
         # TODO: Get the info of item with index 'idx'
