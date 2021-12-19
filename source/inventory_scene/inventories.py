@@ -1,4 +1,4 @@
-from super.inventory import CardInventory, Card
+from super.inventory.inventory import CardInventory, Card
 from public.defaults import Window, Styles
 
 

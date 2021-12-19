@@ -1,4 +1,3 @@
-import pyglet.event
 from cocos.scene import Scene
 from public.defaults import Z
 from public.audio import music

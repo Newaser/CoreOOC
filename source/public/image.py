@@ -44,3 +44,4 @@ class Test:
     resource.reindex()
 
     actor = resource.image("actor.png")
+    swiftness = resource.image("swiftness.png")

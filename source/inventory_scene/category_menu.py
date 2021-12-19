@@ -5,7 +5,7 @@ from public.actions import *
 from public.defaults import Window
 from public.image import GUI
 from public.transitions import black_field_transition
-from super.graphical_menus import GraphicalMenu, PicMenuItem
+from super.menu.graphical_menus import GraphicalMenu, PicMenuItem
 
 
 class CategoryMenu(GraphicalMenu):

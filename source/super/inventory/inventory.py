@@ -6,7 +6,7 @@ from cocos.sprite import Sprite
 from cocos.rect import Rect
 from pyglet.window import mouse
 
-from .card import Card
+from super.inventory.card import Card
 from public.defaults import Z
 from public.settings import current_settings
 from public.transitions import black_field_transition

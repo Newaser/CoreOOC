@@ -1,7 +1,7 @@
 from cocos.cocosnode import CocosNode
 from cocos.menu import MenuItem, fixedPositionMenuLayout
 
-from .text_menus import VerticalMenu
+from super.menu.text_menus import VerticalMenu
 from public.actions import *
 from public.defaults import Font, Z
 from public.shapes import BorderedShape

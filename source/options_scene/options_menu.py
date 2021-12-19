@@ -1,6 +1,6 @@
 from cocos.menu import MenuItem, fixedPositionMenuLayout
 
-from super.text_menus import HorizontalMenu
+from super.menu.text_menus import HorizontalMenu
 from manager.z_manager import ZManager
 from public.actions import *
 from public.transitions import black_field_transition

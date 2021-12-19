@@ -1,6 +1,6 @@
 from cocos.menu import *
 
-from super.text_menus import VerticalMenu
+from super.menu.text_menus import VerticalMenu
 from public.actions import *
 from public.transitions import black_field_transition
 from public.defaults import Font

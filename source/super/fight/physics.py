@@ -4,14 +4,18 @@ from cocos.rect import Rect
 
 
 class Physics2(object):
-    def __init__(self, m=1, x=Vector2(0, 0), v=Vector2(0, 0), drag_c=0):
+    def __init__(self, m, x, v, drag_c=0):
 
         # Basic physical quantities
         self._m = m
         self._x = x
         self._v = v
-        self._a = Vector2(0, 0)
-        self._f = Vector2(0, 0)
+        self._a = Vector2()
+        self._f = Vector2()
+
+        # Memo: the latest variation of x & v
+        self._last_dx = Vector2()
+        self._last_dv = Vector2()
 
         # Limits
         self._max_v_norm = None
@@ -27,6 +31,8 @@ class Physics2(object):
         self.motion_scale = 1
 
     def update(self, dt):
+        """Update physical quantities as it elapsed dt secs
+        """
         self._update_drag()
 
         # Kinetics Formulas
@@ -36,15 +42,20 @@ class Physics2(object):
         self.v += dv
         self.x += dx * self.motion_scale
 
+        self._last_dv = dv
+        self._last_dx = dx * self.motion_scale
+
     def _update_drag(self):
+        """Update the value of drags
+        """
         # if abs(self.v) < 0.25:
-        #     self.v = Vector2(0, 0)
+        #     self.v = Vector2()
 
         try:
-            value = - self.v.normalized() * self.drag_c * abs(self.v) ** 2
-            self.reforce('air_drag', value)
+            f_value = - self.v.normalized() * self.drag_c * abs(self.v) ** 2
+            self.reforce('air_drag', f_value)
         except OverflowError:
-            raise OverflowError(str(self.v))
+            raise OverflowError("v = " + str(self.v))
 
     def _set_m(self, m):
         if m > 0:
@@ -94,8 +105,8 @@ class Physics2(object):
     def _set_max_a_norm(self, max_a_norm):
         self._max_a_norm = max_a_norm
 
-    def _set_x_boundary(self, boundaries):
-        self._x_boundary = boundaries
+    def _set_x_boundary(self, new_boundary):
+        self._x_boundary = new_boundary
 
     m = property(lambda self: self._m, _set_m)
 
@@ -106,6 +117,10 @@ class Physics2(object):
     a = property(lambda self: self._a, _set_a)
 
     f = property(lambda self: self._f, _set_f)
+
+    last_dx = property(lambda self: self._last_dx)
+
+    last_dv = property(lambda self: self._last_dv)
 
     max_v = property(lambda self: self._max_v_norm, _set_max_v_norm)
 
@@ -139,3 +154,19 @@ class Physics2(object):
 
     def collide(self, other):
         assert isinstance(other, self.__class__)
+
+        m1 = self.m
+        m2 = other.m
+        v1 = self.v
+        v2 = other.v
+
+        # Complete elastic collision formulas
+        v1_ = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2)
+        v2_ = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2)
+
+        self.v = v1_
+        other.v = v2_
+
+        # Undo the displacements
+        self.x -= self.last_dx
+        other.x -= other.last_dx
