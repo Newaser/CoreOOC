@@ -31,7 +31,7 @@ class Physics2(object):
         self.motion_scale = 1
 
     def update(self, dt):
-        """Update physical quantities as it elapsed dt secs
+        """Update physical quantities as it elapsed 'dt' secs
         """
         self._update_drag()
 

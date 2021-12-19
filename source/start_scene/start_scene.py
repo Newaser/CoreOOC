@@ -1,6 +1,7 @@
 from cocos.scene import Scene
 from public.defaults import Z
 from public.audio import music
+from public.language import shift_language
 
 # Import _bottom layer & _top layer
 from .start_bg_layer import StartBackgroundLayer
@@ -23,5 +24,7 @@ class StartScene(Scene):
 
     def on_enter(self):
         super(StartScene, self).on_enter()
+
+        shift_language()
 
         music.play('mild', 0.1, True)

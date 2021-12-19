@@ -22,8 +22,8 @@ def run_game():
                   height=Window.HEIGHT,
                   caption="Core OOC"
                   )
-    # director.run(StartScene())
-    director.run(TestScene())
+    director.run(StartScene())
+    # director.run(TestScene())
 
 
 if __name__ == '__main__':
