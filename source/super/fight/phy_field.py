@@ -2,7 +2,7 @@ from cocos.layer import ColorLayer
 from cocos.collision_model import CollisionManagerGrid
 
 from public.defaults import Window
-from public.settings import key_map
+from public.stat import key_map
 
 
 class PhyField(ColorLayer):

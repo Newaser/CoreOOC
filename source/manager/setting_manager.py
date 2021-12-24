@@ -1,34 +1,29 @@
 from copy import deepcopy
+from public.defaults import Settings
 
 
 class SettingManager:
-    def __init__(self, default_settings):
-        self.default_settings = default_settings
-        try:
-            # TODO: Import the settings from the save file
-            #
-            # TODO: Reset key map when the save file is valid, apply the saved settings
-            # if save_valid:
-            #     self.settings = apply()
-            pass
-        except Exception as e:
-            raise e
+    """Manage setting preferences with a given setting dictionary.
+    """
+    def __init__(self, settings):
+        self.settings = settings
 
-    def new_settings(self):
-        return deepcopy(self.default_settings)
-
-    def reset(self, settings, sort_list=None):
+    def reset(self, sort_list=None):
+        """Reset settings in batches
+        """
+        # Default: reset all settings
         if sort_list is None:
-            for sort in settings.keys:
-                settings[sort] = self.new_settings()[sort]
-        else:
-            for sort in sort_list:
-                settings[sort] = self.new_settings()[sort]
+            sort_list = self.settings.keys()
 
-    @staticmethod
-    def split(settings, sort):
-        if sort == 'key_map_p1':
-            key_map = settings['key_map']
+        # Reset
+        for sort in sort_list:
+            self.settings[sort] = deepcopy(Settings.DEFAULT[sort])
+
+    def query(self, keyword):
+        """Query certain subset of settings by keyword
+        """
+        if keyword == 'key_map_p1':
+            key_map = self.settings['key_map']
             return {
                 "UP": key_map['battle_up_p1'],
                 "DOWN": key_map['battle_down_p1'],
@@ -41,8 +36,8 @@ class SettingManager:
                 "SKILL_2": key_map['skill_2_p1'],
                 "SKILL_3": key_map['skill_3_p1'],
             }
-        elif sort == 'key_map_p2':
-            key_map = settings['key_map']
+        elif keyword == 'key_map_p2':
+            key_map = self.settings['key_map']
             return {
                 "UP": key_map['battle_up_p2'],
                 "DOWN": key_map['battle_down_p2'],
@@ -55,7 +50,7 @@ class SettingManager:
                 "SKILL_2": key_map['skill_2_p2'],
                 "SKILL_3": key_map['skill_3_p2'],
             }
-        
-    def add_difficulty_by(self):
+
+    def add_difficulty_by(self, rate):
         # TODO: Add difficulty by changing settings properly
         pass

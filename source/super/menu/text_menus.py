@@ -2,12 +2,9 @@ from cocos.director import director
 from cocos.menu import *
 from pyglet.window import mouse
 
-from public.settings import current_settings
+from public.stat import key_map
 from public.audio import sound
 from public.actions import *
-
-
-key_map = current_settings["key_map"]
 
 
 class VerticalMenu(Menu):

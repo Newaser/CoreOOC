@@ -72,8 +72,8 @@ class CardMenu(VerticalMenu):
             '': MenuItem('', None),
             '查看': MenuItem('查看', self.on_check),
             '出售': MenuItem('出售', self.on_sell),
-            '装上': MenuItem('装上', self.on_install),
-            '卸下': MenuItem('卸下', self.on_uninstall),
+            '装上': MenuItem('装上', self.on_equip),
+            '卸下': MenuItem('卸下', self.on_unequip),
             '合成': MenuItem('合成', self.on_forge),
             '拆开': MenuItem('拆开', self.on_unpack),
         }
@@ -145,10 +145,10 @@ class CardMenu(VerticalMenu):
     def on_sell(self):
         pass
 
-    def on_install(self):
+    def on_equip(self):
         pass
 
-    def on_uninstall(self):
+    def on_unequip(self):
         pass
 
     def on_forge(self):

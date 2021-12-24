@@ -2,7 +2,7 @@ from super.fight.phy_field import PhyField
 from test_scene.player import Player
 from public.defaults import Window
 from public.image import Test
-from public.settings import key_map_p1, key_map_p2
+from public.stat import key_map_p1, key_map_p2
 
 
 class TestLayer(PhyField):
