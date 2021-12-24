@@ -8,7 +8,7 @@ from pyglet.window import mouse
 
 from super.inventory.card import Card
 from public.defaults import Z
-from public.settings import current_settings
+from public.stat import key_map
 from public.transitions import black_field_transition
 
 # Trial
@@ -154,7 +154,7 @@ class Inventory(Layer):
         self._update_items()
 
     def on_key_press(self, symbol, _):
-        if symbol in current_settings["key_map"]["back"]:
+        if symbol in key_map["back"]:
             self.on_quit()
             return True
 

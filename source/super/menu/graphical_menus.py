@@ -6,7 +6,7 @@ from cocos.rect import Rect
 from cocos.euclid import Vector2
 
 from public.audio import sound
-from public.settings import current_settings
+from public.stat import key_map
 from public.shapes import BorderedShape
 
 
@@ -126,7 +126,7 @@ class GraphicalMenu(Layer):
             self._activate_item(self.default_activated, enter=True)
 
     def on_key_press(self, symbol, _):
-        if symbol in current_settings["key_map"]["back"]:
+        if symbol in key_map["back"]:
             self.on_quit()
             return True
 

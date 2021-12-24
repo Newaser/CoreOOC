@@ -29,14 +29,25 @@ class Items:
     resource.reindex()
 
     try:
-        _equipment_set = resource.image("equipments.png")
-        _metal_set = resource.image("metals.png")
-        _chest_set = resource.image("chests.png")
-        equipments = ImageGrid(_equipment_set, 1, 5)
-        metals = ImageGrid(_metal_set, 1, 6)
-        chests = ImageGrid(_chest_set, 1, 4)
+        __equipment_set = resource.image("equipments.png")
+        __metal_set = resource.image("metals.png")
+        __chest_set = resource.image("chests.png")
+        __ingot_set = resource.image("ingots.png")
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
+
+    DICT = {}
+    equipments = ImageGrid(__equipment_set, 1, 5)
+    metals = ImageGrid(__metal_set, 1, 6)
+    chests = ImageGrid(__chest_set, 1, 4)
+    ingots = ImageGrid(__ingot_set, 2, 3)
+
+    for i in range(4):
+        DICT['Ch' + str(i)] = chests[i]
+    for i in range(5):
+        DICT['Eq' + str(i)] = equipments[i]
+    for i in range(6):
+        DICT['MaM' + str(i)] = ingots[i]
 
 
 class Test:

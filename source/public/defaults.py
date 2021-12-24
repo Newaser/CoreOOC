@@ -33,15 +33,18 @@ class Z:
     TOP = 255
 
 
-class Vectors:
+class Player:
     # Forces
     UP_PUSH = Vector2(0, 1000)
     DOWN_PUSH = - UP_PUSH
     RIGHT_PUSH = Vector2(940, 0)
     LEFT_PUSH = - RIGHT_PUSH
 
-    # Multiple
+    # Multiples
     SPEED_MUL = 3
+
+    # Player
+    DEFAULT_HP = 100
 
 
 class Settings:
@@ -83,9 +86,30 @@ class Settings:
         "skill_3_p2": [key.NUM_6],
     }
 
-    DEFAULT_SETTINGS = {
-        "key_map": KEY_MAP
+    VIDEO = {
+        "fullscreen": False,
     }
+
+    AUDIO = {
+        "music_volume": 100,
+        "sound_volume": 100,
+    }
+
+    DEFAULT = {
+        "key_map": KEY_MAP,
+        "video": VIDEO,
+        "audio": AUDIO,
+    }
+
+
+class Progress:
+    DEFAULT = {
+        "high_score": [0] * 15,
+        "accessible": [True] + [False] * 14
+    }
+
+
+SAVE_PATH = "./save/01.sav"
 
 
 class Styles:
