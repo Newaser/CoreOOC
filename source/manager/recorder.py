@@ -38,7 +38,9 @@ class Recorder:
         self.read(SAVE_PATH)
 
     def __repr__(self):
-        return str(self.settings) + "\n" + str(self.progress) + "\n" + str(self.items)
+        return str(self.settings) + "\n" + \
+               str(self.progress) + "\n" + \
+               str(self.items) + "\n"
 
     def __clear(self):
         """Delete the local data
