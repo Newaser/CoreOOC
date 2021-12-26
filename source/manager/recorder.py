@@ -42,13 +42,6 @@ class Recorder:
                str(self.progress) + "\n" + \
                str(self.items) + "\n"
 
-    def __clear(self):
-        """Delete the local data
-        """
-        del self.settings
-        del self.progress
-        del self.items
-
     def __is_empty(self):
         """If all statistics empty
         """
@@ -59,8 +52,6 @@ class Recorder:
     def formatting(self):
         """Formatting the local data and save file
         """
-        self.__clear()
-
         self.settings = deepcopy(Settings.DEFAULT)
         self.progress = deepcopy(Progress.DEFAULT)
         self.items = get_formatted_item_dict()
@@ -77,8 +68,6 @@ class Recorder:
         except FileNotFoundError:
             self.no_save()
             return
-
-        self.__clear()
 
         self.settings = eval(content[0])
         self.progress = eval(content[1])

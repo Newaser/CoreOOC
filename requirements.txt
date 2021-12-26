@@ -4,3 +4,4 @@ six == 1.16.0
 numpy == 1.21.4
 pyglet-ffmpeg2 == 0.1.17
 pywin32 == 302
+pymysql == 1.0.2

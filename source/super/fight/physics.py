@@ -134,10 +134,17 @@ class Physics2(object):
         self._ex_force.clear()
 
     def force(self, force_id, value):
-        assert isinstance(value, Vector2)
+        if not isinstance(value, Vector2):
+            raise TypeError('''
+            Try adding an invalid force to Physics: force must be Vector2
+            ''')
 
         if force_id in self._ex_force.keys():
-            assert self._ex_force[force_id] == value
+            if not self._ex_force[force_id] == value:
+                raise TypeError('''
+                Try adding an invalid force to Physics: 
+                force id is already registered but the value doesn't equal to the registered one's
+                ''')
             return
 
         self._ex_force[force_id] = value
@@ -153,7 +160,10 @@ class Physics2(object):
         self.force(force_id, value)
 
     def collide(self, other):
-        assert isinstance(other, self.__class__)
+        if not isinstance(other, self.__class__):
+            raise TypeError('''
+            Collision is permitted only between Physics objects
+            ''')
 
         m1 = self.m
         m2 = other.m

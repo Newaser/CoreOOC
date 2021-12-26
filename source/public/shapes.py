@@ -60,7 +60,16 @@ class _BorderedRectangle(shapes.BorderedRectangle):
 
         super().__init__(*position, *size, border_thickness, self._body_rgb, self._border_rgb)
 
-        self.transform_anchor = self.x + self.width / 2, self.y + self.height / 2
+        self._size = size
+        self._anchor = self.x + self.width / 2, self.y + self.height / 2
+
+    @property
+    def size(self):
+        return self._size
+
+    @property
+    def original_anchor(self):
+        return self._anchor
 
     def _update_color(self):
         float_rgba = [*self._body_rgb, self._body_opacity] * 4 + \
@@ -131,7 +140,10 @@ class Shape(CocosNode):
         super().__init__()
 
         self.shape = _shape_dict[shape_name](*args, **kwargs)
-        self.anchor = self.shape.transform_anchor
+
+        # Define Anchor
+        self.transform_anchor = self.shape.transform_anchor
+        self.anchor = self.transform_anchor
 
     def draw(self, *args, **kwargs):
         gl.glPushMatrix()
@@ -155,7 +167,7 @@ class BorderedShape(Shape):
         super(Shape, self).__init__()
 
         self.shape = _bordered_dict[shape_name](*args, **kwargs)
-        self.anchor = self.shape.transform_anchor
+        self.anchor = self.shape.original_anchor
 
     def _set_border_color(self, rgb):
         self.shape.border_color = rgb
@@ -166,6 +178,3 @@ class BorderedShape(Shape):
         self.shape.border_opacity = opacity
 
     border_opacity = property(lambda self: self.shape.border_opacity, _set_border_opacity)
-
-
-

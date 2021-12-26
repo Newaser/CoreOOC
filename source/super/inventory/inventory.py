@@ -1,90 +1,145 @@
-from copy import copy
-
 from cocos.layer import Layer
-from cocos.batch import BatchNode
-from cocos.sprite import Sprite
 from cocos.rect import Rect
 from pyglet.window import mouse
 
-from super.inventory.card import Card
-from public.defaults import Z
-from public.stat import key_map
+from public.defaults import Z, SAVE_PATH
+from public.errors import ItemOverflowError
+from public.events import emitter
+from public.stat import im, key_map, stat
 from public.transitions import black_field_transition
-
-# Trial
-from public.virtual_db import my_items
+from super.inventory.inventory_component import Card, Slot
 
 
 class Inventory(Layer):
+    """Abstract base class for inventory layers.
+    Inventory is used to store items.
+
+    Normal usage is:
+
+     - create a subclass
+     - override __init__ to set all style attributes,
+       and then call `create_inventory()`
+     - Finally you shall add the inventory to an `Scene` or another `Layer`
+    """
     is_event_handler = True
+
+    # dictionary of sounds & effects happening on select, activate
+    when = ['selected', 'unselected', 'activated', 'inactivated']
+    sounds = {key: None for key in when}
+    effects = {key: None for key in when}
+
+    # category of the inventory items
+    category = None
 
     def __init__(self):
         super(Inventory, self).__init__()
-        # What kind of items in the inventory
-        self.category = None
 
-        # Create a batch to manage items
-        self.slot_batch = BatchNode()
+        # CHILD NODE STUFF
 
-        # Create lists to point to items and its attributes
+        #: list of slots
         self.slots = []
-        self.valid_areas = []
 
-        # About layout
+        #: list of triples concerning items: [(item_id, item_amount, item_sprite)] * n
+        self.item_triples = []
+
+        # LAYOUT STUFF
+
+        #: number of slots
         self.number = 1
+
+        #: max number of columns in a line
         self.max_column = 1
+
+        #: X, Y spacings between adjacent slots
         self.spacing = (0, 0)
+
+        #: top left corner of the inventory(used in slot building)
         self.start_position = (0, 0)
 
-        # Rows & Size cannot be assigned currently
-        self.rows = 0
-        self.width = 0
-        self.height = 0
-        self.size = self.width, self.height
+        # INTERACTION STUFF
 
-        # Define which slot is currently selected, activated
+        #: define which slot is currently selected, activated
         self.selected_idx = None
         self.activated_idx = None
 
-        # About style
-        self.slot_style = {
-            "image": None,
-            "valid_area": Rect(0, 0, 0, 0),
-            "selected_effect": None,
-            "unselected_effect": None,
-        }
+    @property
+    def rows(self):
+        """Amount of slot rows
+        """
+        return self.number // self.max_column
 
-        # Create thr inventory according to a given slot_style and layout
-        # self.create_inventory(slot_style)
+    @property
+    def width(self):
+        """Overall width of the inventory
+        """
+        return self.slots[0].width * self.max_column + self.spacing[0] * (self.number - 1)
 
-    def create_inventory(self, slot_style):
-        self._build_slots(slot_style)
+    @property
+    def height(self):
+        """Overall height of the inventory
+        """
+        return self.slots[0].height * self.rows + self.spacing[1] * (self.number - 1)
 
-    def _build_slots(self, slot_style):
-        # Create a batch to manage items
-        self.slot_batch = BatchNode()
-        self.add(self.slot_batch)
+    @property
+    def size(self):
+        """Overall size of the inventory
+        """
+        return self.width, self.height
 
-        # Add items to the batch
+    def on_enter(self):
+        super(Inventory, self).on_enter()
+
+        # ADD event handlers
+        emitter.push_handlers(self)
+
+        # RESET
+        self._unselect_slot()
+        self._inactivate_slot()
+        self._update_items()
+
+    def on_exit(self):
+        super(Inventory, self).on_exit()
+
+        # REMOVE event handlers
+        emitter.remove_handlers(self)
+
+        # SAVE the records to the save file
+        stat.recorder.write(SAVE_PATH)
+
+    def create_inventory(self):
+        """Create a basic inventory with slots. At the end of
+        __init__ in subclasses of :class:`Inventory`, call this method.
+        """
+        self._build_slots()
+
+    '''
+    About slots
+    '''
+    def _build_slots(self):
+        """Build the slot array starting at the left top corner
+        From left to right, then from the top down
+
+        Start
+        v
+        o-----------
+        |          |
+        |          |
+        |          |
+        ------------
+        """
         for i in range(self.number):
-            slot = Slot(**slot_style)
-            slot.image_anchor = 0, 0
+            # CREATE a new slot
+            slot = Slot()
 
+            # SET position for the slot
             x, y = self.start_position
-            x += i % self.max_column * slot.width + i * self.spacing[0]  # X-coordinate
-            y -= i // self.max_column * slot.height + i * self.spacing[1] + slot.height  # Y-coordinate
+            x += (i % self.max_column) * (slot.width + self.spacing[0])
+            y -= (i // self.max_column) * (slot.height + self.spacing[1]) + slot.height
             slot.position = x, y
 
-            self.slot_batch.add(slot)
-
-        # Fill the list pointing to items
-        self.slots = self.slot_batch.get_children()
-
-        # Fill valid area list with the coordinate to world
-        for slot in self.slots:
-            area = slot.valid_area
-            world_position = self.slot_batch.point_to_world(slot.point_to_world(area.position))
-            self.valid_areas.append(Rect(*world_position, *area.size))
+            # ADD
+            self.slots.append(slot)
+            self.add(slot)
 
     def _select_slot(self, idx):
         if idx == self.selected_idx:
@@ -120,39 +175,63 @@ class Inventory(Layer):
         self.slots[self.activated_idx].on_inactivated()
         self.activated_idx = None
 
-    def _in_any_area(self, point):
-        for idx in range(self.number):
-            if self.valid_areas[idx].contains(*point):
+    def _in_any_slot(self, point):
+        """Check if the given point in any area of slot.
+        If in, find out in which slot
+        """
+        for idx, slot in enumerate(self.slots):
+            if slot.get_rect().contains(*point):
                 return True, idx
         return False, None
 
+    '''
+    About Items
+    '''
     def _update_items(self):
-        # TODO: Update arrangement of items by remove all items and re-add all items according to item list
-        idx = 0
-        for data in my_items:
-            if data['category'] == self.category:
-                item = Sprite(data['image'])
-                item.position = self.slots[idx].point_to_world((33.5, 46.5))
-                self.slots[idx].add(item)
-                idx += 1
+        """Update arrangement of item icons and item amount counters,
+        meanwhile update self.item_triples according to the statistics.
+
+        - The order is:
+            fetch_statistics -> kill_old_nodes -> update_triples -> add_new_nodes
+        """
+        # FETCH categorized item triples from the game statistics
+        stat_triples = im.get_item_triples(categories=self.category)
+
+        # if number of items EXCEEDS slot number, ERROR
+        if len(stat_triples) > self.number:
+            raise ItemOverflowError
+
+        # KILL every item icon and item amount counter from the inventory if it exists
+        for triple in self.item_triples:
+            for i in [1, 2]:
+                if triple[i].parent is not None:
+                    triple[i].kill()
+
+        # UPDATE self.item_triples
+        self.item_triples = stat_triples
+
+        # ADD all updated item icons and item amount counters to the inventory
+        for idx, triple in enumerate(self.item_triples):
+            # GET the slot, icon and counter from the triple
+            slot = self.slots[idx]
+            icon = triple[1]
+            counter = triple[2]
+
+            # SET POSITION of the icon and counter
+            icon.position = slot.get_rect().center
+            counter.position = slot.get_rect().right, slot.get_rect().bottom
+
+            # ADD
+            self.add(icon)
+            self.add(counter)
 
     def _get_item_info(self, idx):
         # TODO: Get the info of item with index 'idx'
         pass
 
-    def on_enter(self):
-        super(Inventory, self).on_enter()
-
-        # Calculate the rows and size
-        self.rows = self.number // self.max_column
-        self.width = self.slots[0].width * self.max_column + self.spacing[0] * (self.number - 1)
-        self.height = self.slots[0].height * self.rows + self.spacing[1] * (self.number - 1)
-
-        # Reset
-        self._unselect_slot()
-        self._inactivate_slot()
-        self._update_items()
-
+    '''
+    About events
+    '''
     def on_key_press(self, symbol, _):
         if symbol in key_map["back"]:
             self.on_quit()
@@ -162,8 +241,8 @@ class Inventory(Layer):
         p1 = (x - dx, y - dy)
         p2 = (x, y)
 
-        p1_in_areas, idx1 = self._in_any_area(p1)
-        p2_in_areas, idx2 = self._in_any_area(p2)
+        p1_in_areas, idx1 = self._in_any_slot(p1)
+        p2_in_areas, idx2 = self._in_any_slot(p2)
 
         if not p1_in_areas and p2_in_areas:
             self._select_slot(idx2)
@@ -177,15 +256,46 @@ class Inventory(Layer):
         if button not in (mouse.LEFT, mouse.RIGHT):
             return
 
-        in_areas, idx = self._in_any_area((x, y))
+        in_slots, idx = self._in_any_slot((x, y))
 
-        if in_areas:
-            self._activate_slot(idx, (x, y))
+        if in_slots:
+            # If the slot mouse in contains an item
+            if idx < len(self.item_triples):
+                self._activate_slot(idx, (x, y))
         else:
             self._inactivate_slot((x, y))
 
-    def on_quit(self):
+    @staticmethod
+    def on_quit():
         black_field_transition()
+
+    def on_check(self):
+        pass
+
+    def on_sell(self, num):
+        # GET the ID of item to be sold
+        activated_item_id = self.item_triples[self.activated_idx][0]
+
+        # SELL and UPDATE
+        still_have = im.sell(activated_item_id, num)
+        self._update_items()
+
+        # if the type of item sold out
+        if not still_have:
+            self._inactivate_slot()
+
+    def on_sell_all(self):
+        # '-1' means sell all
+        self.on_sell(-1)
+
+    def on_equip(self):
+        pass
+
+    def on_forge(self):
+        pass
+
+    def on_unpack(self):
+        pass
 
 
 class CardInventory(Inventory):
@@ -195,7 +305,9 @@ class CardInventory(Inventory):
         # Create a option card
         self.card = Card('')
 
-    def _card_move_to(self, position, idx):
+    def _card_move_to(self, position):
+        """Move Card to a certain spot
+        """
         # Card move
         self.card.position = position
 
@@ -235,7 +347,7 @@ class CardInventory(Inventory):
                 (click_position[0] > self.start_position[0] + self.width / 2) * self.card.body.shape.width
             y = click_position[1] - \
                 (click_position[1] > self.start_position[1] - self.height / 2) * self.card.body.shape.height
-            self._card_move_to((x, y), idx)
+            self._card_move_to((x, y))
 
         elif case['3']:
             self._inactivate_slot()
@@ -255,84 +367,3 @@ class CardInventory(Inventory):
         if self._in_card((x, y)):
             return
         super(CardInventory, self).on_mouse_release(x, y, button, _)
-
-
-class Slot(Sprite):
-    """A slot of Inventory or Card
-    """
-    def __init__(self, image, valid_area=None, selected_effect=None,
-                 unselected_effect=None, activated_effect=None, inactivated_effect=None):
-        """Create a Slot with the 'image' and
-        its valid clicking area 'valid_area'(use local position).
-        """
-        super(Slot, self).__init__(image)
-
-        if valid_area is None:
-            self.valid_area = Rect(0, 0, self.width, self.height)
-        else:
-            assert isinstance(valid_area, Rect)
-            self.valid_area = valid_area
-
-        self.is_activated = False
-        self.selected_effect = selected_effect
-        self.unselected_effect = unselected_effect
-        self.activated_effect = activated_effect
-        self.inactivated_effect = inactivated_effect
-
-    def on_selected(self):
-        if self.is_activated:
-            return
-
-        if self.selected_effect is not None:
-            temp = copy(self.image_anchor)
-            self.image_anchor = (self.width // 2, self.height // 2)
-
-            self.stop()
-            self.do(self.selected_effect)
-            for child in self.get_children():
-                child.stop()
-                child.do(self.selected_effect)
-
-            self.image_anchor = temp
-
-    def on_unselected(self):
-        if self.is_activated:
-            return
-
-        if self.unselected_effect is not None:
-            temp = copy(self.image_anchor)
-            self.image_anchor = (self.width // 2, self.height // 2)
-
-            self.stop()
-            self.do(self.unselected_effect)
-            for child in self.get_children():
-                child.stop()
-                child.do(self.unselected_effect)
-
-            self.image_anchor = temp
-
-    def on_activated(self):
-        if self.activated_effect is not None:
-            temp = copy(self.image_anchor)
-            self.image_anchor = (self.width // 2, self.height // 2)
-
-            self.stop()
-            self.do(self.activated_effect)
-            for child in self.get_children():
-                child.stop()
-                child.do(self.activated_effect)
-
-            self.image_anchor = temp
-
-    def on_inactivated(self):
-        if self.inactivated_effect is not None:
-            temp = copy(self.image_anchor)
-            self.image_anchor = (self.width // 2, self.height // 2)
-
-            self.stop()
-            self.do(self.inactivated_effect)
-            for child in self.get_children():
-                child.stop()
-                child.do(self.inactivated_effect)
-
-            self.image_anchor = temp

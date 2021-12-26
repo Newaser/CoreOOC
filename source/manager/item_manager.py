@@ -1,24 +1,43 @@
+from cocos.text import Label
+
 from db.item import ItemQuery, get_category_list
+from public.defaults import Styles
+from public.errors import UnaffordableError, ExcessiveRemovingError
 
 
 class ItemManager:
     """Manage items that the player possess with a given item_id-item_number dictionary.
     """
+
     def __init__(self, items):
         self.items = items
 
     def add(self, item_id, num=1):
-        """Add a given amount of items
+        """Add a specific amount of items
+        If num is negative, add to the max
+
+        :return: How much item has been added
         """
+        # TODO: If num is negative, add the item to the max
         assert num >= 0
         self.items[item_id] += num
 
+        return num
+
     def remove(self, item_id, num=1):
-        """Remove a given amount of items
+        """Remove a specific amount of items
+        If num is negative, remove all items identified 'item_id'
+
+        :return: How much item has been removed
         """
-        assert num >= 0
-        assert self.items[item_id] - num >= 0
+        if num < 0:
+            num = self.items[item_id]
+        if num > self.items[item_id]:
+            raise ExcessiveRemovingError
+
         self.items[item_id] -= num
+
+        return num
 
     def clear(self, item_id_list=None):
         """Set amount of items in batches
@@ -36,14 +55,16 @@ class ItemManager:
         """
         return [key for key in self.items.keys() if ItemQuery(key).buyable]
 
-    def get_sprite_triples(self, items=None, categories=None, sorting=True):
-        """Return a list of triples about items the player possess,
+    def get_item_triples(self, items=None, categories=None, sorting=True):
+        """Return a list of triples about items that the player possess,
         each of the triples consists of:
-            (item_id, item_number, item_sprite)
+
+            (item_id, icon_sprite, amount_label)
+
         :param items: The item list, default: all items
         :param categories: Restrict the categories, default: all categories(except 'coin')
         :param sorting: If the triple list will be sorted by 'item_id'
-        :return: A triple list: [(item_id, item_number, item_sprite)] * n
+        :return: A triple list: [(item_id, icon_sprite, amount_label)] * n
         """
         # Set default values
         if items is None:
@@ -53,7 +74,11 @@ class ItemManager:
 
         # Construct the triple list
         triples = [
-            (key, value, ItemQuery(key).get_sprite())
+            (
+                key,  # item_id
+                ItemQuery(key).get_sprite(),  # item_icon
+                Label(str(value), **Styles.ITEM_COUNTER_FONT),  # item_counter
+            )
             for key, value in items.items()
             if value > 0 and ItemQuery(key).category in categories
         ]
@@ -68,23 +93,45 @@ class ItemManager:
         return triples
 
     def sell(self, item_id, num=1):
-        """Sell a given amount of items
-        """
-        assert item_id != 'C0'
-        assert num >= 0
-        assert self.items[item_id] - num >= 0
+        """Sell a specific amount of items
+        If num is negative, sell all items identified 'item_id'
 
-        self.items[item_id] -= num
-        self.add('C0', num * ItemQuery(item_id).selling_price)
+        :return: If the item identified 'item_id' sold out after
+            selling, return False; else True
+
+        Example::
+
+            # sell ten Gold Ingots
+            item_manager.sell('MaM0', 10)
+
+            # sell all Filbert Kernel(s)
+            item_manager.sell('MaT0', 10)
+        """
+        if item_id == 'C0':
+            raise ValueError("Coin cannot be traded as items")
+        if self.items[item_id] < num:
+            raise UnaffordableError
+
+        remove_amount = self.remove(item_id, num)
+        self.add('C0', remove_amount * ItemQuery(item_id).selling_price)
+
+        # return whether the player still has the type of items
+        return self.items[item_id] > 0
 
     def buy(self, item_id, num=1):
-        """Buy a given amount of items
-        If the money is insufficient, raise 'ValueError'
+        """Buy a specific amount of items
+
+        Example::
+
+            # buy one Optical Reactor
+            item_manager.buy('MaT5', 1)
         """
-        assert item_id != 'C0'
-        assert num >= 0
+        if item_id == 'C0':
+            raise ValueError("Coin cannot be traded as items")
+        if num < 0:
+            raise ValueError("A negative value of num is given on buying")
         if self.items['C0'] < num * ItemQuery(item_id).buying_price:
-            raise ValueError
+            raise UnaffordableError
 
         self.remove('C0', num * ItemQuery(item_id).buying_price)
         self.items[item_id] += num

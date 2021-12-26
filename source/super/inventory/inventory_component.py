@@ -1,13 +1,77 @@
+from copy import copy
+
 from cocos.cocosnode import CocosNode
 from cocos.menu import MenuItem, fixedPositionMenuLayout
+from cocos.rect import Rect
 
-from super.menu.text_menus import VerticalMenu
 from public.actions import *
-from public.defaults import Font, Z
+from public.audio import sound
+from public.defaults import Font, Z, Styles
+from public.events import emitter
 from public.shapes import BorderedShape
+from super.menu.text_menus import VerticalMenu
+
+
+class Slot(BorderedShape):
+    """A slot of Inventory
+    """
+    @property
+    def inventory(self):
+        """The inventory on which me is based
+        """
+        return self.parent
+
+    def __init__(self):
+        super(Slot, self).__init__(**Styles.SLOT_SHAPE)
+
+        self.width, self.height = self.shape.width, self.shape.height
+
+        self.is_activated = False
+
+    def _sound_and_effect(self, when, enter=False):
+        sd = self.parent.sounds[when]
+        ef = self.parent.effects[when]
+
+        if sd is not None and not enter:
+            sound.play(sd)
+
+        if ef is not None:
+            # do effect with the anchor == center
+            origin = copy(self.transform_anchor)
+            self.transform_anchor = self.get_rect().center
+            self.stop()
+            self.do(ef)
+            self.transform_anchor = origin
+
+    def on_selected(self):
+        if self.is_activated:
+            return
+
+        self._sound_and_effect('selected')
+
+    def on_unselected(self):
+        if self.is_activated:
+            return
+
+        self._sound_and_effect('unselected')
+
+    def on_activated(self):
+        self._sound_and_effect('activated')
+
+    def on_inactivated(self):
+        self._sound_and_effect('inactivated')
+
+    def get_rect(self):
+        return Rect(self.x, self.y, self.width, self.height)
 
 
 class Card(CocosNode):
+    @property
+    def inventory(self):
+        """The inventory on which me is based
+        """
+        return self.parent
+
     def __init__(self, *options):
         super(Card, self).__init__()
 
@@ -64,18 +128,26 @@ class Card(CocosNode):
 class CardMenu(VerticalMenu):
     activate_sound = 'button_activate'
 
+    @property
+    def inventory(self):
+        """The inventory on which me is based
+        """
+        return self.parent.parent.parent
+
     def __init__(self, options, frames):
         super(CardMenu, self).__init__()
 
         # Option name -> Menu Item
         self._option_dict = {
             '': MenuItem('', None),
-            '查看': MenuItem('查看', self.on_check),
-            '出售': MenuItem('出售', self.on_sell),
-            '装上': MenuItem('装上', self.on_equip),
-            '卸下': MenuItem('卸下', self.on_unequip),
-            '合成': MenuItem('合成', self.on_forge),
-            '拆开': MenuItem('拆开', self.on_unpack),
+            '查看': MenuItem('查看', emitter.check),
+            '出售': MenuItem('出售', emitter.sell),
+            '全售': MenuItem('全售', emitter.sell_all),
+            '装上': MenuItem('装上', emitter.equip),
+            '卸下': MenuItem('卸下', emitter.unequip),
+            '合成': MenuItem('合成', emitter.forge),
+            '拆开': MenuItem('拆开', emitter.unpack),
+            '全拆': MenuItem('全拆', emitter.unpack_all),
         }
 
         # The frames from the parent
@@ -139,23 +211,5 @@ class CardMenu(VerticalMenu):
         # Set the selected frame translucent
         self.parent_frames[new_idx].do(ShapeFadeTo(128, 0, 'border'))
 
-    def on_check(self):
-        pass
-
-    def on_sell(self):
-        pass
-
-    def on_equip(self):
-        pass
-
-    def on_unequip(self):
-        pass
-
-    def on_forge(self):
-        pass
-
-    def on_unpack(self):
-        pass
-
     def on_quit(self):
-        del self.parent.parent.parent.activated_slot
+        del self.inventory.activated_slot

@@ -49,7 +49,10 @@ class PhyField(ColorLayer):
             self.actors['player'][1].unify_positions()
 
     def add(self, actor, z=0, name=None):
-        assert actor.category in self.actors.keys()
+        if actor.category not in self.actors.keys():
+            raise ValueError('''
+            Try add an actor with invalid category to PhyField
+            ''')
 
         super(PhyField, self).add(actor, z, name)
         self.actors[actor.category].append(actor)

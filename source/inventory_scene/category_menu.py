@@ -14,12 +14,7 @@ class CategoryMenu(GraphicalMenu):
 
         # Set sounds & effects
         self.sounds['activated'] = 'shrill_page_slide'
-        self.effects = {
-            "selected": FadeTo(230, 0),
-            "unselected": FadeTo(255, 0),
-            "activated": FadeTo(211, 0) + highlight(),
-            "inactivated": stop_highlight() + FadeTo(255, 0),
-        }
+        self.effects = Styles.CATEGORY_MENU_EFFECTS
 
         # Create menu item list
         self.items = []

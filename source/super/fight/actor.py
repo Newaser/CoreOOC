@@ -110,19 +110,28 @@ class LivingActor(Actor):
         if points is None:
             points = self.max_HP
 
-        assert points >= 0
+        if points < 0:
+            raise ValueError('''
+            The value of HP cannot be negative
+            ''')
         self.max_HP = points
         self.HP = self.max_HP
 
     def heal(self, points):
-        assert points >= 0
+        if points < 0:
+            raise ValueError('''
+            The value of HP to be healed cannot be negative
+            ''')
 
         self.HP += points
 
         self.on_heal()
 
     def damage(self, points):
-        assert points >= 0
+        if points < 0:
+            raise ValueError('''
+            The value of HP to be damaged cannot be negative
+            ''')
 
         self.HP -= points
 

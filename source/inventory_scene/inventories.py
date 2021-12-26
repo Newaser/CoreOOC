@@ -3,6 +3,8 @@ from public.defaults import Window, Styles
 
 
 class EquipmentInventory(CardInventory):
+    effects = Styles.INVENTORY_EFFECTS
+
     def __init__(self):
         super(EquipmentInventory, self).__init__()
 
@@ -11,18 +13,19 @@ class EquipmentInventory(CardInventory):
 
         # Init layout
         self.number = 15
-        self.rows = 3
         self.max_column = 6
-        self.margin = (0, 0)
+        self.spacing = (13, 13)
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = Card('查看', '装上', '出售')
+        self.card = Card('查看', '装上', '出售', '全售')
 
-        self.create_inventory(Styles.slot)
+        self.create_inventory()
 
 
 class MaterialInventory(CardInventory):
+    effects = Styles.INVENTORY_EFFECTS
+
     def __init__(self):
         super(MaterialInventory, self).__init__()
 
@@ -31,18 +34,19 @@ class MaterialInventory(CardInventory):
 
         # Init layout
         self.number = 16
-        self.rows = 3
         self.max_column = 6
-        self.margin = (0, 0)
+        self.spacing = (13, 13)
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = Card('查看', '出售')
+        self.card = Card('查看', '出售', '全售')
 
-        self.create_inventory(Styles.slot)
+        self.create_inventory()
 
 
 class BlueprintInventory(CardInventory):
+    effects = Styles.INVENTORY_EFFECTS
+
     def __init__(self):
         super(BlueprintInventory, self).__init__()
 
@@ -51,18 +55,19 @@ class BlueprintInventory(CardInventory):
 
         # Init layout
         self.number = 17
-        self.rows = 3
         self.max_column = 6
-        self.margin = (0, 0)
+        self.spacing = (13, 13)
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = Card('查看', '合成', '出售')
+        self.card = Card('查看', '合成', '出售', '全售')
 
-        self.create_inventory(Styles.slot)
+        self.create_inventory()
 
 
 class ChestInventory(CardInventory):
+    effects = Styles.INVENTORY_EFFECTS
+
     def __init__(self):
         super(ChestInventory, self).__init__()
 
@@ -71,12 +76,11 @@ class ChestInventory(CardInventory):
 
         # Init layout
         self.number = 18
-        self.rows = 3
         self.max_column = 6
-        self.margin = (0, 0)
+        self.spacing = (13, 13)
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = Card('查看', '拆开', '出售')
+        self.card = Card('查看', '拆开', '出售', '全售')
 
-        self.create_inventory(Styles.slot)
+        self.create_inventory()

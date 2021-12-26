@@ -1,9 +1,24 @@
 from pyglet.window import key
-from cocos.rect import Rect
 from cocos.euclid import Vector2
 
-from .actions import *
-from .image import GUI
+from public.actions import *
+
+
+class Color:
+    # Gray Tone
+    WHITE = 255, 255, 255
+    WHITE_SMOKE = 245, 245, 245
+    GAINSBORO = 220, 220, 220
+    LIGHT_GRAY = 211, 211, 211
+    SLIVER = 192, 192, 192
+    DARK_GRAY = 169, 169, 169
+    GRAY = 128, 128, 128
+    DIM_GRAY = 105, 105, 105
+    BLACK = 0, 0, 0
+
+    # Yellow Tone
+    GOLD = 255, 215, 0
+    DARK_ORANGE = 255, 140, 0
 
 
 class Font:
@@ -13,6 +28,7 @@ class Font:
         "庞门正道粗书体6.0": "PangMenZhengDao-Cu6.0",
         "站酷高端黑": "huxiaobo-gdh",
         '汉仪南宫体简': 'HYNanGongJ',
+        "BRITANNIC": "Britannic Bold",
     }
 
 
@@ -113,11 +129,49 @@ SAVE_PATH = "./save/01.sav"
 
 
 class Styles:
-    slot = {
-        "image": GUI.slot,
-        "valid_area": Rect(0, 80 - 67, 67, 67),
-        "selected_effect": FadeTo(200, 0),
-        "unselected_effect": FadeTo(255, 0),
-        "activated_effect": FadeTo(150, 0) + highlight(),
-        "inactivated_effect": stop_highlight() + FadeTo(255, 0),
+    # FONT STYLES
+    ITEM_COUNTER_FONT = {
+        'font_name': Font.FAMILY_NAME['BRITANNIC'],
+        'font_size': 25,
+        'bold': True,
+        'italic': False,
+        'anchor_y': 'bottom',
+        'anchor_x': 'right',
+        'color': (0, 0, 0, 255),
+        'dpi': 96,
+    }
+
+    # SHAPE STYLES
+    SLOT_SHAPE = {
+        'shape_name': 'Rect',
+        'position': (0, 0),
+        'size': (67, 67),
+        'border_thickness': 2,
+        'body_rgba': (*Color.LIGHT_GRAY, 215),
+        'border_rgba': (*Color.DARK_GRAY, 255),
+    }
+
+    # EFFECTS
+    INVENTORY_EFFECTS = {
+        "selected":
+            ShapeGraduateTo(Color.GAINSBORO, 0, 'body'),
+
+        "unselected":
+            ShapeGraduateTo(Color.LIGHT_GRAY, 0, 'body'),
+
+        "activated":
+            highlight() +
+            ShapeGraduateTo(Color.WHITE_SMOKE, 0, 'body') +
+            ShapeGraduateTo(Color.DARK_ORANGE, 0, 'border'),
+
+        "inactivated":
+            stop_highlight() +
+            ShapeGraduateTo(Color.LIGHT_GRAY, 0, 'body') +
+            ShapeGraduateTo(Color.DARK_GRAY, 0, 'border'),
+    }
+    CATEGORY_MENU_EFFECTS = {
+        "selected": FadeTo(230, 0),
+        "unselected": FadeTo(255, 0),
+        "activated": FadeTo(211, 0) + highlight(),
+        "inactivated": stop_highlight() + FadeTo(255, 0),
     }

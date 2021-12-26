@@ -14,9 +14,9 @@ class GraphicalMenu(Layer):
     is_event_handler = True
 
     # Initialize sounds & effects dicts
-    keys = ['selected', 'unselected', 'activated', 'inactivated']
-    sounds = dict([(key, None) for key in keys])
-    effects = dict([(key, None) for key in keys])
+    stats = ['selected', 'unselected', 'activated', 'inactivated']
+    sounds = {key: None for key in stats}
+    effects = {key: None for key in stats}
 
     def __init__(self):
         super(GraphicalMenu, self).__init__()
@@ -55,7 +55,10 @@ class GraphicalMenu(Layer):
         # Sizes of items in item list must be the same
         self.item_size = self.items[0].width, self.items[0].height
         for item in self.items:
-            assert Vector2(item.width, item.height) == Vector2(*self.item_size)
+            if Vector2(item.width, item.height) != Vector2(*self.item_size):
+                raise ValueError('''
+                Menu can't be created: subsequent images should be the same size as the first one
+                ''')
 
         self._build_items()
 
