@@ -7,7 +7,7 @@ from public.errors import ItemOverflowError
 from public.events import emitter
 from public.stat import im, key_map, stat
 from public.transitions import black_field_transition
-from super.inventory.inventory_component import Card, Slot
+from super.inventory.inventory_component import OptionCard, Slot, InfoCard
 
 
 class Inventory(Layer):
@@ -33,15 +33,6 @@ class Inventory(Layer):
 
     def __init__(self):
         super(Inventory, self).__init__()
-
-        # CHILD NODE STUFF
-
-        #: list of slots
-        self.slots = []
-
-        #: list of triples concerning items: [(item_id, item_amount, item_sprite)] * n
-        self.item_triples = []
-
         # LAYOUT STUFF
 
         #: number of slots
@@ -56,7 +47,18 @@ class Inventory(Layer):
         #: top left corner of the inventory(used in slot building)
         self.start_position = (0, 0)
 
-        # INTERACTION STUFF
+        # COMPONENT STUFF
+
+        #: list of slots
+        self.slots = []
+
+        #: list of triples concerning items: [(item_id, item_amount, item_sprite)] * n
+        self.item_triples = []
+
+        #: item info card
+        self.info_card = InfoCard()
+
+        # FUNCTIONAL STUFF
 
         #: define which slot is currently selected, activated
         self.selected_idx = None
@@ -103,6 +105,9 @@ class Inventory(Layer):
         # REMOVE event handlers
         emitter.remove_handlers(self)
 
+        # CLOSE the info card
+        self.info_card.close()
+
         # SAVE the records to the save file
         stat.recorder.write(SAVE_PATH)
 
@@ -110,7 +115,12 @@ class Inventory(Layer):
         """Create a basic inventory with slots. At the end of
         __init__ in subclasses of :class:`Inventory`, call this method.
         """
+        # Add slots
         self._build_slots()
+
+        # Add the info card
+        self.info_card.position = 666, 110
+        self.add(self.info_card)
 
     '''
     About slots
@@ -270,7 +280,11 @@ class Inventory(Layer):
         black_field_transition()
 
     def on_check(self):
-        pass
+        # GET the ID of item to be sold
+        activated_item_id = self.item_triples[self.activated_idx][0]
+
+        # Open the info card with item_id
+        self.info_card.open(activated_item_id)
 
     def on_sell(self, num):
         # GET the ID of item to be sold
@@ -303,7 +317,7 @@ class CardInventory(Inventory):
         super(CardInventory, self).__init__()
 
         # Create a option card
-        self.card = Card('')
+        self.card = OptionCard('')
 
     def _card_move_to(self, position):
         """Move Card to a certain spot

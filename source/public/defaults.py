@@ -36,7 +36,7 @@ class Window:
     """
     Concerning: Window
     """
-    FULLSCREEN = False
+    FULLSCREEN = True
     RESIZABLE = False
     VSYNC = False
     WIDTH = 1280
@@ -135,9 +135,35 @@ class Styles:
         'font_size': 25,
         'bold': True,
         'italic': False,
-        'anchor_y': 'bottom',
+        'anchor_y': 'baseline',
         'anchor_x': 'right',
-        'color': (0, 0, 0, 255),
+        'color': (*Color.BLACK, 255),
+        'dpi': 96,
+    }
+    INFO_NAME_FONT = {
+        'font_name': Font.FAMILY_NAME['站酷高端黑'],
+        'font_size': 14,
+        'bold': True,
+        'italic': False,
+        'anchor_y': 'baseline',
+        'anchor_x': 'center',
+        'color': (*Color.DARK_ORANGE, 255),
+        'dpi': 96,
+    }
+    INFO_DESCRIPTION_FONT = {
+        'font_name': Font.FAMILY_NAME['汉仪南宫体简'],
+        'font_size': 14,
+        'bold': True,
+        'italic': False,
+        'color': (*Color.WHITE, 255),
+        'x': 0,
+        'y': 0,
+        'width': 357,
+        'height': 87,
+        'anchor_y': 'top',
+        'anchor_x': 'left',
+        'align': 'left',
+        'multiline': True,
         'dpi': 96,
     }
 
@@ -149,6 +175,11 @@ class Styles:
         'border_thickness': 2,
         'body_rgba': (*Color.LIGHT_GRAY, 215),
         'border_rgba': (*Color.DARK_GRAY, 255),
+    }
+    INFO_FRAME_SHAPE = {
+        'border_thickness': 2,
+        'body_rgba': (*Color.BLACK, 178),
+        'border_rgba': (*Color.BLACK, 255)
     }
 
     # EFFECTS

@@ -1,9 +1,9 @@
-from pyglet import font
 from cocos.director import director
+from pyglet import font
 
+from public.defaults import Window
 from start_scene.start_scene import StartScene
 from test_scene.test_scene import TestScene
-from public.defaults import Window
 
 
 def run_game():
@@ -15,13 +15,14 @@ def run_game():
     except Exception as e:
         raise SystemExit(e)
 
-    director.init(fullscreen=Window.FULLSCREEN,
-                  resizable=Window.RESIZABLE,
-                  vsync=Window.VSYNC,
-                  width=Window.WIDTH,
-                  height=Window.HEIGHT,
-                  caption="Core OOC"
-                  )
+    director.init(
+        fullscreen=Window.FULLSCREEN,
+        resizable=Window.RESIZABLE,
+        vsync=Window.VSYNC,
+        width=Window.WIDTH,
+        height=Window.HEIGHT,
+        caption="Core OOC"
+    )
     director.run(StartScene())
     # director.run(TestScene())
 

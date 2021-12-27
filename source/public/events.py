@@ -10,7 +10,7 @@ Explanation of the events defined here:
     - "on_unequip": A request of removing an equipment from a player
     - "on_forge": A request of using one blueprint
     - "on_unpack": A request of opening one treasure chest
-    - "on_unpack": A request of opening all treasure chests with a same id
+    - "on_unpack_all": A request of opening all treasure chests with a same id
 """
 
 
