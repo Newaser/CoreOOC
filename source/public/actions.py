@@ -59,6 +59,17 @@ def stop_highlight():
     return ScaleTo(1, duration=0)
 
 
+def throw_in(scale=2):
+    """
+    Throw a CocosNode strongly into the scene
+
+    Example::
+
+        sprite.do(throw_in())
+    """
+    return ScaleBy(scale, 0) + ScaleBy(1/scale, 0.05)
+
+
 class FadeBy(IntervalAction):
     """Fades a `CocosNode` object by a multiple value by modifying it's opacity attribute.
 

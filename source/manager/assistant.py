@@ -224,6 +224,9 @@ class ReceiptNotifier(Layer):
         for component in line.components:
             self.add(component)
 
+        for component in [line.item_icon, line.amount_label]:
+            component.do(throw_in())
+
         self.screen_lines.add(line)
 
     def _remove_line(self, line):

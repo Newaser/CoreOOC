@@ -69,6 +69,7 @@ class Recorder:
             self.no_save()
             return
 
+        # EXTRACT values from the content
         self.settings = eval(content[0])
         self.progress = eval(content[1])
         self.items = eval(content[2])

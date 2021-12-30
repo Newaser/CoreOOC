@@ -1,5 +1,6 @@
 class ProgressManager:
-    """Manage game progress and achievements with a given item_id-item_number dictionary.
+    """Manage the game progress and achievements with
+    a given progress dictionary.
     """
     def __init__(self, progress):
         self.progress = progress
