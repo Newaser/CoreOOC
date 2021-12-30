@@ -17,12 +17,14 @@ class Color:
     BLACK = 0, 0, 0
 
     # Yellow Tone
+    KHAKI = 240, 230, 140
     GOLD = 255, 215, 0
     DARK_ORANGE = 255, 140, 0
 
 
 class Font:
     FAMILY_NAME = {
+        "黑体": "SimHei",
         "方正粗黑宋简体": "FZCuHeiSongS-B-GB",
         "楷体": "KaiTi",
         "庞门正道粗书体6.0": "PangMenZhengDao-Cu6.0",
@@ -36,7 +38,7 @@ class Window:
     """
     Concerning: Window
     """
-    FULLSCREEN = True
+    FULLSCREEN = False
     RESIZABLE = False
     VSYNC = False
     WIDTH = 1280
@@ -47,6 +49,9 @@ class Window:
 class Z:
     BOTTOM = -255
     TOP = 255
+
+    NOTICE = 260
+    WARNING = 300
 
 
 class Player:
@@ -130,6 +135,26 @@ SAVE_PATH = "./save/01.sav"
 
 class Styles:
     # FONT STYLES
+    WARNING_FONT = {
+        'font_name': Font.FAMILY_NAME['黑体'],
+        'font_size': 19,
+        'bold': False,
+        'italic': False,
+        'anchor_y': 'center',
+        'anchor_x': 'center',
+        'color': (*Color.WHITE, 255),
+        'dpi': 96,
+    }
+    RECEIPT_FONT = {
+        'font_name': Font.FAMILY_NAME['庞门正道粗书体6.0'],
+        'font_size': 22,
+        'bold': False,
+        'italic': True,
+        'anchor_y': 'center',
+        'anchor_x': 'left',
+        'color': (*Color.WHITE_SMOKE, 255),
+        'dpi': 96,
+    }
     ITEM_COUNTER_FONT = {
         'font_name': Font.FAMILY_NAME['BRITANNIC'],
         'font_size': 25,
@@ -141,7 +166,7 @@ class Styles:
         'dpi': 96,
     }
     INFO_NAME_FONT = {
-        'font_name': Font.FAMILY_NAME['站酷高端黑'],
+        'font_name': Font.FAMILY_NAME['方正粗黑宋简体'],
         'font_size': 14,
         'bold': True,
         'italic': False,
@@ -153,7 +178,7 @@ class Styles:
     INFO_DESCRIPTION_FONT = {
         'font_name': Font.FAMILY_NAME['汉仪南宫体简'],
         'font_size': 14,
-        'bold': True,
+        'bold': False,
         'italic': False,
         'color': (*Color.WHITE, 255),
         'x': 0,
@@ -168,6 +193,16 @@ class Styles:
     }
 
     # SHAPE STYLES
+    WARNING_PANEL_RECT = {
+        'border_thickness': 0,
+        'body_rgba': (*Color.BLACK, 178),
+        'border_rgba': (*Color.BLACK, 255),
+    }
+    RECEIPT_BG_RECT = {
+        'border_thickness': 5,
+        'body_rgba': (*Color.BLACK, 178),
+        'border_rgba': (*Color.KHAKI, 255),
+    }
     SLOT_SHAPE = {
         'shape_name': 'Rect',
         'position': (0, 0),
@@ -176,7 +211,7 @@ class Styles:
         'body_rgba': (*Color.LIGHT_GRAY, 215),
         'border_rgba': (*Color.DARK_GRAY, 255),
     }
-    INFO_FRAME_SHAPE = {
+    INFO_FRAME_RECT = {
         'border_thickness': 2,
         'body_rgba': (*Color.BLACK, 178),
         'border_rgba': (*Color.BLACK, 255)

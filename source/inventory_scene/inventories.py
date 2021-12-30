@@ -18,7 +18,7 @@ class EquipmentInventory(CardInventory):
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = OptionCard('查看', '装上', '出售', '全售')
+        self.card = OptionCard('查看', '装上', '出售', '全部出售')
 
         self.create_inventory()
 
@@ -39,7 +39,7 @@ class MaterialInventory(CardInventory):
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = OptionCard('查看', '出售', '全售')
+        self.card = OptionCard('查看', '出售', '全部出售')
 
         self.create_inventory()
 
@@ -60,7 +60,7 @@ class BlueprintInventory(CardInventory):
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = OptionCard('查看', '合成', '出售', '全售')
+        self.card = OptionCard('查看', '合成', '出售', '全部出售')
 
         self.create_inventory()
 
@@ -81,6 +81,6 @@ class ChestInventory(CardInventory):
         self.start_position = (666, Window.HEIGHT - 233)
 
         # Set card
-        self.card = OptionCard('查看', '拆开', '全拆', '出售', '全售')
+        self.card = OptionCard('查看', '拆开', '全部拆开', '出售', '全部出售')
 
         self.create_inventory()

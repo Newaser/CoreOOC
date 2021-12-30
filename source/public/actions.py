@@ -59,6 +59,38 @@ def stop_highlight():
     return ScaleTo(1, duration=0)
 
 
+class FadeBy(IntervalAction):
+    """Fades a `CocosNode` object by a multiple value by modifying it's opacity attribute.
+
+    Example::
+
+        action = FadeBy(0.5, 2)
+        sprite.do(action)
+    """
+    def init(self, multiple, duration):
+        """Init method.
+
+        :Parameters:
+            `multiple` : float
+                The multiple of the alpha
+            `duration` : float
+                Seconds that it will take to fade
+        """
+        self.mul = multiple
+        self.duration = duration
+
+    def start(self):
+        self.start_alpha = self.target.opacity
+        self.end_alpha = self.start_alpha * self.mul
+
+        if not 0 <= self.end_alpha <= 255:
+            raise ValueError("The multiple of alpha is too big or too small")
+
+    def update(self, t):
+        self.target.opacity = self.start_alpha + (
+            self.end_alpha - self.start_alpha) * t
+
+
 class ShapeGraduateTo(IntervalAction):
     """
     Transform a Shape(or its border) from the
@@ -75,7 +107,7 @@ class ShapeGraduateTo(IntervalAction):
         self.duration = duration
         self.obj = obj
 
-        if obj not in ('body', 'border'):
+        if obj not in ['body', 'border']:
             raise ValueError('''
             The object of action "ShapeGraduateTo" must in 'body', 'border'
             ''')
@@ -109,7 +141,7 @@ class ShapeFadeTo(IntervalAction):
         self.duration = duration
         self.obj = obj
 
-        if obj not in ('body', 'border'):
+        if obj not in ['body', 'border']:
             raise ValueError('''
             The object of action "ShapeFadeTo" must in 'body', 'border'
             ''')
@@ -143,7 +175,7 @@ class ShapeFadeBy(IntervalAction):
         self.duration = duration
         self.obj = obj
 
-        if obj not in ('body', 'border'):
+        if obj not in ['body', 'border']:
             raise ValueError('''
             The object of action "ShapeFadeBy" must in 'body', 'border'
             ''')
@@ -151,7 +183,7 @@ class ShapeFadeBy(IntervalAction):
     def start(self):
         self.start_alpha = {'body': self.target.opacity,
                             'border': self.target.border_opacity}[self.obj]
-        self.end_alpha = int(self.obj * self.multiple)
+        self.end_alpha = int(self.start_alpha * self.multiple)
 
         if not 0 <= self.end_alpha <= 255:
             raise ValueError('''

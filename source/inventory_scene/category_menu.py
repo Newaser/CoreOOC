@@ -1,7 +1,6 @@
 from cocos.layer import MultiplexLayer
 
 from .inventories import *
-from public.actions import *
 from public.defaults import Window
 from public.image import GUI
 from public.transitions import black_field_transition

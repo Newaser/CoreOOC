@@ -142,7 +142,7 @@ class Shape(CocosNode):
         self.shape = _shape_dict[shape_name](*args, **kwargs)
 
         # Define Anchor
-        self.transform_anchor = self.shape.transform_anchor
+        self.transform_anchor = self.shape.original_anchor
         self.anchor = self.transform_anchor
 
     def draw(self, *args, **kwargs):

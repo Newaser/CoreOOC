@@ -34,21 +34,22 @@ class SeniorPlayer(JuniorPlayer):
         self._source_name = None
 
     def play(self, name=None, volume=None, loop=None):
-        # TODO: Add more senior functions, such as min_distance, max_distance,  pitch, on_player_eos(), etc.
-        """
+        # TODO: Add more senior functions, such as min_distance, max_distance, pitch, on_player_eos(), etc.
+        """Play the current music source, or play a new music resource.
         :param name: The name of music resource to play
         :param volume: The volume of the music player
         :param loop: If the music player loops
-        :return: None
 
-        - If param 'name' is not given, determine if play the current music source:
-            - If the current music source exists, play it
-            - If not error
-        - If param 'name' is given, determine if play the music called 'name':
-            - If 'name' in the resource name list:
-                - If music called 'name' is currently playing, return
-                - If not, discard the current music source, then play the music called 'name'
-            - Else, error
+        Example::
+
+            # player pause
+            senior_player.pause()
+
+            # play the current music source
+            senior_player.play()
+            
+            # play a new music resource
+            senior_player.play('new_music', loop=False)
         """
 
         # If vol or loop not given, use previous ones
@@ -73,12 +74,16 @@ class SeniorPlayer(JuniorPlayer):
                 self._source_name = name
                 self._player.play()
         else:
-            raise ValueError("No such music resource: " + name)
+            raise ValueError(f'''
+            No music resource named "{name}"
+            ''')
 
     def pause(self):
-        """
-        If the current music source exists, pause it; else, error
-        :return: None
+        """Pause the current music source exists
+
+        Example::
+
+            senior_player.pause()
         """
         try:
             self._player.pause()
@@ -86,10 +91,14 @@ class SeniorPlayer(JuniorPlayer):
             raise e
 
     def get_resource(self, name):
+        """Get the music resource by its name
+        """
         if name in self._name_list:
             return self._resources[name]
         else:
-            raise ValueError("No such music resource: " + name)
+            raise ValueError(f'''
+            No music resource named "{name}"
+            ''')
 
     def get_volume(self):
         return copy(self._player.volume)

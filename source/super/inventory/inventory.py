@@ -2,12 +2,14 @@ from cocos.layer import Layer
 from cocos.rect import Rect
 from pyglet.window import mouse
 
+from db.item import ItemQuery
 from public.defaults import Z, SAVE_PATH
 from public.errors import ItemOverflowError
 from public.events import emitter
+from manager.assistant import Assistant
 from public.stat import im, key_map, stat
 from public.transitions import black_field_transition
-from super.inventory.inventory_component import OptionCard, Slot, InfoCard
+from super.inventory.inventory_components import OptionCard, Slot, InfoCard
 
 
 class Inventory(Layer):
@@ -283,8 +285,11 @@ class Inventory(Layer):
         # GET the ID of item to be sold
         activated_item_id = self.item_triples[self.activated_idx][0]
 
-        # Open the info card with item_id
+        # OPEN the info card with item_id
         self.info_card.open(activated_item_id)
+
+        # INACTIVATE the slot
+        self._inactivate_slot()
 
     def on_sell(self, num):
         # GET the ID of item to be sold
@@ -305,11 +310,31 @@ class Inventory(Layer):
     def on_equip(self):
         pass
 
+    def on_unequip(self):
+        pass
+
     def on_forge(self):
         pass
 
     def on_unpack(self):
-        pass
+        # warn TEST
+        Assistant.warn("暂未开放！")
+
+        # INACTIVATE the slot
+        self._inactivate_slot()
+
+    def on_unpack_all(self):
+        # notify TEST
+        tuple_list = [
+            (ItemQuery('MaM0').get_sprite(), 3),
+            (ItemQuery('MaM1').get_sprite(), 5),
+            (ItemQuery('Ch0').get_sprite(), 4),
+            (ItemQuery('MaM1').get_sprite(), 17),
+        ]
+        Assistant.notify(tuple_list)
+
+        # INACTIVATE the slot
+        self._inactivate_slot()
 
 
 class CardInventory(Inventory):

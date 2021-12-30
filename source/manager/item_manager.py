@@ -96,7 +96,7 @@ class ItemManager:
         """Sell a specific amount of items
         If num is negative, sell all items identified 'item_id'
 
-        :return: If the item identified 'item_id' sold out after
+        :return: If the items identified as 'item_id' sold out after
             selling, return False; else True
 
         Example::
@@ -105,7 +105,7 @@ class ItemManager:
             item_manager.sell('MaM0', 10)
 
             # sell all Filbert Kernel(s)
-            item_manager.sell('MaT0', 10)
+            item_manager.sell('MaT0', -1)
         """
         if item_id == 'C0':
             raise ValueError("Coin cannot be traded as items")

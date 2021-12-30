@@ -22,6 +22,9 @@ _event_type_list = ['on_check', 'on_sell', 'on_sell_all', 'on_buy', 'on_equip',
 
 
 class Emitter(EventDispatcher):
+    """
+    Emit different events
+    """
     def check(self):
         self.dispatch_event('on_check')
 
