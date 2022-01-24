@@ -1,6 +1,7 @@
 from cocos.text import Label
 
 from db.item import ItemQuery, get_category_list
+from db.unpacking import UnpackingQuery
 from public.defaults import Styles
 from public.errors import UnaffordableError, ExcessiveRemovingError
 
@@ -49,6 +50,11 @@ class ItemManager:
         # Clear
         for key in item_id_list:
             self.items[key] = 0
+
+    def has(self, item_id):
+        """If there's any item identified 'item_id'
+        """
+        return self.items[item_id] > 0
 
     def goods(self):
         """Return a list of item_id of items that is buyable
@@ -116,7 +122,7 @@ class ItemManager:
         self.add('C0', remove_amount * ItemQuery(item_id).selling_price)
 
         # return whether the player still has the type of items
-        return self.items[item_id] > 0
+        return self.has(item_id)
 
     def buy(self, item_id, num=1):
         """Buy a specific amount of items
@@ -135,3 +141,33 @@ class ItemManager:
 
         self.remove('C0', num * ItemQuery(item_id).buying_price)
         self.items[item_id] += num
+
+    def unpack(self, item_id, num=1):
+        """Unpack a specific amount of chests
+
+        :return: A list [(obtained_item_icon0, amount0), (obtained_item_icon1, amount1), ...]
+
+        Example::
+
+            # unpack an equipment supply
+            item_manager.unpack('Ch3', 1)
+        """
+        if num < 0:
+            num = self.items[item_id]
+
+        # RETURN value
+        tuples = []
+
+        # PERFORM an unpacking experiment
+        obtained = UnpackingQuery(item_id).experiment(num)
+
+        # If the experiment succeeds
+        #: REMOVE the unpacked chests
+        self.remove(item_id, num)
+
+        #: ADD the treasures and APPEND the tuple list
+        for treasure_id, amount in obtained.items():
+            self.add(treasure_id, amount)
+            tuples.append((ItemQuery(treasure_id).get_sprite(), amount))
+
+        return tuples

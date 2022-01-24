@@ -90,6 +90,12 @@ class Inventory(Layer):
         """
         return self.width, self.height
 
+    @property
+    def activated_item_id(self):
+        """The ID of the item in the activated slot
+        """
+        return self.item_triples[self.activated_idx][0]
+
     def on_enter(self):
         super(Inventory, self).on_enter()
 
@@ -282,21 +288,15 @@ class Inventory(Layer):
         black_field_transition()
 
     def on_check(self):
-        # GET the ID of item to be sold
-        activated_item_id = self.item_triples[self.activated_idx][0]
-
         # OPEN the info card with item_id
-        self.info_card.open(activated_item_id)
+        self.info_card.open(self.activated_item_id)
 
         # INACTIVATE the slot
         self._inactivate_slot()
 
     def on_sell(self, num):
-        # GET the ID of item to be sold
-        activated_item_id = self.item_triples[self.activated_idx][0]
-
         # SELL and UPDATE
-        still_have = im.sell(activated_item_id, num)
+        still_have = im.sell(self.activated_item_id, num)
         self._update_items()
 
         # if the type of item sold out
@@ -316,14 +316,28 @@ class Inventory(Layer):
     def on_forge(self):
         pass
 
-    def on_unpack(self):
+    def on_unpack(self, num):
+        # UNPACK, NOTIFY and UPDATE
+        tuple_list = im.unpack(self.activated_item_id, num)
+        Assistant.notify(tuple_list)
+        self._update_items()
+
+        # if the type of chest runs out
+        if not im.has(self.activated_item_id):
+            self._inactivate_slot()
+
+    def on_unpack_all(self):
+        # '-1' means unpack all
+        self.on_unpack(-1)
+
+    def on_warn_test(self):
         # warn TEST
         Assistant.warn("暂未开放！")
 
         # INACTIVATE the slot
         self._inactivate_slot()
 
-    def on_unpack_all(self):
+    def on_notify_test(self):
         # notify TEST
         tuple_list = [
             (ItemQuery('MaM0').get_sprite(), 3),

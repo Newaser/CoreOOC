@@ -33,6 +33,7 @@ class Items:
         __metal_set = resource.image("metals.png")
         __chest_set = resource.image("chests.png")
         __ingot_set = resource.image("ingots.png")
+        __coin_set = resource.image("coin_set.png")
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
 
@@ -42,6 +43,10 @@ class Items:
     chests = ImageGrid(__chest_set, 1, 4)
     ingots = ImageGrid(__ingot_set, 2, 3)
 
+    __coin_seq = ImageGrid(__coin_set, 4, 1)
+    coin_anim = Animation.from_image_sequence(__coin_seq, 0.2)
+
+    DICT['C0'] = __coin_seq[3]
     for i in range(4):
         DICT['Ch' + str(i)] = chests[i]
     for i in range(5):

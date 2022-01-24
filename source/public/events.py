@@ -46,8 +46,8 @@ class Emitter(EventDispatcher):
     def forge(self):
         self.dispatch_event('on_forge')
 
-    def unpack(self):
-        self.dispatch_event('on_unpack')
+    def unpack(self, num=1):
+        self.dispatch_event('on_unpack', num)
 
     def unpack_all(self):
         self.dispatch_event('on_unpack_all')

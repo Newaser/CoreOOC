@@ -5,3 +5,4 @@ numpy == 1.21.4
 pyglet-ffmpeg2 == 0.1.17
 pywin32 == 302
 pymysql == 1.0.2
+scipy == 1.7.3

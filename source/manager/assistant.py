@@ -13,7 +13,7 @@ from public.shapes import BorderedShape
 
 
 class Assistant(object):
-    """The assistant of the director, who is an instance of :class:`cocos.director.Director`
+    """The assistant of the director, an instance of :class:`cocos.director.Director`
     """
     @classmethod
     def warn(cls, msg, duration=2):

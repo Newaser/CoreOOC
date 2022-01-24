@@ -21,7 +21,7 @@ class Recorder:
         2. Progress: records game progress, achievements, etc., which includes:
             - High Score: highest score of each level,
             - Accessible: if each level is accessible
-        3. Items: number of items the player possess
+        3. Items: number of items the player possesses
 
     I/O with save files by :meth:`read` and :meth:`write`. If the save file broken,
     :meth:`no_save` will be called.
@@ -75,7 +75,7 @@ class Recorder:
         self.items = eval(content[2])
 
     def write(self, path):
-        """Submit the local data to external save files by String
+        """Submit the local data to external save files in the form of String
         """
         with open(path, 'w') as save_file:
             save_file.write(self.__repr__())

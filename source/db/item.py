@@ -1,4 +1,3 @@
-from cocos.text import Label
 from cocos.sprite import Sprite
 
 from db import db
@@ -52,7 +51,7 @@ class ItemQuery:
 
         return str(info_dict)
 
-    def _field_query(self, field):
+    def __field_query(self, field):
         """Get the value of a given field
         """
         sql = f"SELECT {field} FROM item " \
@@ -68,28 +67,28 @@ class ItemQuery:
 
     @property
     def name(self):
-        return self._field_query('name')
+        return self.__field_query('name')
 
     @property
     def raw_name(self):
-        return self._field_query('raw_name')
+        return self.__field_query('raw_name')
 
     @property
     def category(self):
-        return self._field_query('category')
+        return self.__field_query('category')
 
     @property
     def description(self):
-        return self._field_query('description')
+        return self.__field_query('description')
 
     @property
     def buyable(self):
-        return bool(self._field_query('buyable'))
+        return bool(self.__field_query('buyable'))
 
     @property
     def buying_price(self):
-        return self._field_query('buying_price')
+        return self.__field_query('buying_price')
 
     @property
     def selling_price(self):
-        return self._field_query('selling_price')
+        return self.__field_query('selling_price')
