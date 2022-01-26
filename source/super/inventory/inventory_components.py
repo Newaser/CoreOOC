@@ -129,6 +129,7 @@ class OptionCard(CocosNode):
 
 
 class OptionCardMenu(VerticalMenu):
+    select_sound = 'button_selected'
     activate_sound = 'button_activate'
 
     @property

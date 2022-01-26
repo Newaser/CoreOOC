@@ -3,6 +3,7 @@ from cocos.rect import Rect
 from pyglet.window import mouse
 
 from db.item import ItemQuery
+from public.audio import sound
 from public.defaults import Z, SAVE_PATH
 from public.errors import ItemOverflowError
 from public.events import emitter
@@ -295,13 +296,18 @@ class Inventory(Layer):
         self._inactivate_slot()
 
     def on_sell(self, num):
-        # SELL and UPDATE
-        still_have = im.sell(self.activated_item_id, num)
+        # SELL, NOTIFY and UPDATE
+        still_have, coins_obtained = im.sell(self.activated_item_id, num)
+        Assistant.notify([(ItemQuery('C0').get_sprite(), coins_obtained)], sound_play=False)
         self._update_items()
+
+        # SOUND
+        sound.play('sell_buy_item')
 
         # if the type of item sold out
         if not still_have:
             self._inactivate_slot()
+            self.info_card.close()
 
     def on_sell_all(self):
         # '-1' means sell all
@@ -318,13 +324,14 @@ class Inventory(Layer):
 
     def on_unpack(self, num):
         # UNPACK, NOTIFY and UPDATE
-        tuple_list = im.unpack(self.activated_item_id, num)
+        still_have, tuple_list = im.unpack(self.activated_item_id, num)
         Assistant.notify(tuple_list)
         self._update_items()
 
         # if the type of chest runs out
-        if not im.has(self.activated_item_id):
+        if not still_have:
             self._inactivate_slot()
+            self.info_card.close()
 
     def on_unpack_all(self):
         # '-1' means unpack all

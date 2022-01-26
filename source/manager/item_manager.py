@@ -102,8 +102,9 @@ class ItemManager:
         """Sell a specific amount of items
         If num is negative, sell all items identified 'item_id'
 
-        :return: If the items identified as 'item_id' sold out after
-            selling, return False; else True
+        :return:
+            1. If the items identified as 'item_id' sold out after selling, return False; else True;
+            2. The amount of coins obtained via selling
 
         Example::
 
@@ -119,10 +120,13 @@ class ItemManager:
             raise UnaffordableError
 
         remove_amount = self.remove(item_id, num)
-        self.add('C0', remove_amount * ItemQuery(item_id).selling_price)
+        coin_obtained = remove_amount * ItemQuery(item_id).selling_price
+        self.add('C0', coin_obtained)
 
-        # return whether the player still has the type of items
-        return self.has(item_id)
+        # RETURN
+        # 1. whether the items identified as 'item_id' sold out
+        # 2. the amount of coins obtained
+        return self.has(item_id), coin_obtained
 
     def buy(self, item_id, num=1):
         """Buy a specific amount of items
@@ -145,7 +149,9 @@ class ItemManager:
     def unpack(self, item_id, num=1):
         """Unpack a specific amount of chests
 
-        :return: A list [(obtained_item_icon0, amount0), (obtained_item_icon1, amount1), ...]
+        :return:
+            1. If the items identified as 'item_id' runs out, return False; else True;
+            2. A list [(obtained_item_icon0, amount0), (obtained_item_icon1, amount1), ...]
 
         Example::
 
@@ -170,4 +176,4 @@ class ItemManager:
             self.add(treasure_id, amount)
             tuples.append((ItemQuery(treasure_id).get_sprite(), amount))
 
-        return tuples
+        return self.has(item_id), tuples

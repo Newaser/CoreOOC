@@ -8,6 +8,7 @@ from cocos.sprite import Sprite
 from cocos.text import Label
 
 from public.actions import *
+from public.audio import sound
 from public.defaults import Z, Window, Styles
 from public.shapes import BorderedShape
 
@@ -27,15 +28,16 @@ class Assistant(object):
         director.scene.add(warning_panel, z=Z.WARNING)
 
     @classmethod
-    def notify(cls, tuple_list):
+    def notify(cls, tuple_list, sound_play=True):
         """Notify the receipt of items.
 
         :param tuple_list: list[(item_icon, amount), ...]
+        :param sound_play: if play sound effect
         """
         # CREATE a notifier ADDED the RECEIPTS
-        notifier = ReceiptNotifier(tuple_list)
+        notifier = ReceiptNotifier(tuple_list, sound_play)
 
-        # ADD the notifier to the SCENE
+        # ADD the notifier to the current SCENE
         director.scene.add(notifier, z=Z.NOTICE)
 
         # RUN the notifier
@@ -121,7 +123,7 @@ class ReceiptNotifier(Layer):
         -------------------------
     """
 
-    def __init__(self, receipt_tuples=None):
+    def __init__(self, receipt_tuples=None, sound_play=True):
         """:param receipt_tuples:
                 a series of receipts formed as tuples: [(item_icon, amount)] * n
         """
@@ -162,6 +164,9 @@ class ReceiptNotifier(Layer):
 
         #: count if secs exceeds one tick
         self.time_counter = 0.8
+
+        #: if the sound plays
+        self.sound_play = sound_play
 
         # COMPONENT STUFF
 
@@ -263,6 +268,9 @@ class ReceiptNotifier(Layer):
             self.time_counter = 0
 
     def _update(self):
+        """Fade out old lines, add new lines, update lines' vertical
+        positions, and play sound.
+        """
         # MOVE and FADE the old lines
         for line in self.screen_lines:
             self._move_line(line)
@@ -278,7 +286,12 @@ class ReceiptNotifier(Layer):
                 self.kill()
                 return
         else:
+            # ADD a new line
             self._add_line(new_line)
+
+            # play SOUND
+            if self.sound_play:
+                sound.play(Styles.NOTIFYING_SOUND)
 
         # REMOVE lines out of range
         for line in copy(self.screen_lines):

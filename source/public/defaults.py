@@ -50,8 +50,9 @@ class Z:
     BOTTOM = -255
     TOP = 255
 
-    NOTICE = 260
-    WARNING = 300
+    HUD = 300
+    NOTICE = 400
+    WARNING = 500
 
 
 class Player:
@@ -241,3 +242,13 @@ class Styles:
         "activated": FadeTo(211, 0) + highlight(),
         "inactivated": stop_highlight() + FadeTo(255, 0),
     }
+
+    # SOUNDS
+    INVENTORY_SOUNDS = {
+        "selected": 'drop',
+        "unselected": None,
+        "activated": 'dull_activate',
+        "inactivated": None,
+    }
+
+    NOTIFYING_SOUND = 'ring_knock'

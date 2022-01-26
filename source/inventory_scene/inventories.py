@@ -4,6 +4,7 @@ from public.defaults import Window, Styles
 
 class EquipmentInventory(CardInventory):
     effects = Styles.INVENTORY_EFFECTS
+    sounds = Styles.INVENTORY_SOUNDS
 
     def __init__(self):
         super(EquipmentInventory, self).__init__()
@@ -25,6 +26,7 @@ class EquipmentInventory(CardInventory):
 
 class MaterialInventory(CardInventory):
     effects = Styles.INVENTORY_EFFECTS
+    sounds = Styles.INVENTORY_SOUNDS
 
     def __init__(self):
         super(MaterialInventory, self).__init__()
@@ -46,6 +48,7 @@ class MaterialInventory(CardInventory):
 
 class BlueprintInventory(CardInventory):
     effects = Styles.INVENTORY_EFFECTS
+    sounds = Styles.INVENTORY_SOUNDS
 
     def __init__(self):
         super(BlueprintInventory, self).__init__()
@@ -67,6 +70,7 @@ class BlueprintInventory(CardInventory):
 
 class ChestInventory(CardInventory):
     effects = Styles.INVENTORY_EFFECTS
+    sounds = Styles.INVENTORY_SOUNDS
 
     def __init__(self):
         super(ChestInventory, self).__init__()

@@ -4,7 +4,6 @@ from pyglet.window import mouse
 
 from public.stat import key_map
 from public.audio import sound
-from public.actions import *
 
 
 class VerticalMenu(Menu):

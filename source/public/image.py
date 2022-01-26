@@ -19,9 +19,12 @@ class GUI:
         iron_nuggets = resource.image("iron_nuggets.png")
         blueprint = resource.image("blueprint.png")
         chest = resource.image("chest.png")
+        __coin_set = resource.image("coin_set.png")
 
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
+
+    coin_anim = Animation.from_image_sequence(ImageGrid(__coin_set, 4, 1), 0.2)
 
 
 class Items:
@@ -30,27 +33,25 @@ class Items:
 
     try:
         __equipment_set = resource.image("equipments.png")
-        __metal_set = resource.image("metals.png")
+        __blueprint_set = resource.image("blueprints.png")
         __chest_set = resource.image("chests.png")
         __ingot_set = resource.image("ingots.png")
-        __coin_set = resource.image("coin_set.png")
+        __coin_item = resource.image("coin.png")
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
 
     DICT = {}
     equipments = ImageGrid(__equipment_set, 1, 5)
-    metals = ImageGrid(__metal_set, 1, 6)
+    blueprints = ImageGrid(__blueprint_set, 1, 5)
     chests = ImageGrid(__chest_set, 1, 4)
     ingots = ImageGrid(__ingot_set, 2, 3)
 
-    __coin_seq = ImageGrid(__coin_set, 4, 1)
-    coin_anim = Animation.from_image_sequence(__coin_seq, 0.2)
-
-    DICT['C0'] = __coin_seq[3]
+    DICT['C0'] = __coin_item
     for i in range(4):
         DICT['Ch' + str(i)] = chests[i]
     for i in range(5):
         DICT['Eq' + str(i)] = equipments[i]
+        DICT['Bp' + str(i)] = blueprints[i]
     for i in range(6):
         DICT['MaM' + str(i)] = ingots[i]
 
