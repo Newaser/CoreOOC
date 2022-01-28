@@ -315,6 +315,9 @@ class Inventory(Layer):
         # INACTIVATE the slot
         self._inactivate_slot()
 
+    def on_remote_check(self):
+        pass
+
     def on_sell(self, num):
         # SELL, NOTIFY and UPDATE
         still_have, coins_obtained = im.sell(self.activated_item_id, num)
@@ -337,47 +340,23 @@ class Inventory(Layer):
     def on_equip(self):
         pass
 
+    def on_equipped(self):
+        pass
+
     def on_unequip(self):
+        pass
+
+    def on_unequipped(self):
         pass
 
     def on_forge(self):
         pass
 
     def on_unpack(self, num):
-        # UNPACK, NOTIFY and UPDATE
-        still_have, tuple_list = im.unpack(self.activated_item_id, num)
-        Assistant.notify(tuple_list)
-        self._update_items()
-        Assistant.update_money()
-
-        # if the type of chest runs out
-        if not still_have:
-            self._inactivate_slot()
-            self.info_card.close()
+        pass
 
     def on_unpack_all(self):
-        # '-1' means unpack all
-        self.on_unpack(-1)
-
-    def on_warn_test(self):
-        # warn TEST
-        Assistant.warn("暂未开放！")
-
-        # INACTIVATE the slot
-        self._inactivate_slot()
-
-    def on_notify_test(self):
-        # notify TEST
-        tuple_list = [
-            (ItemQuery('MaM0').get_sprite(), 3),
-            (ItemQuery('MaM1').get_sprite(), 5),
-            (ItemQuery('Ch0').get_sprite(), 4),
-            (ItemQuery('MaM1').get_sprite(), 17),
-        ]
-        Assistant.notify(tuple_list)
-
-        # INACTIVATE the slot
-        self._inactivate_slot()
+        pass
 
 
 class CardInventory(Inventory):

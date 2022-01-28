@@ -18,8 +18,8 @@ from super.inventory.inventory_components import OptionCard
 class PlayerCard(Layer):
     """A card that contains the present player's information:
         1. The player's name
-        1. The airplane's status
-        2. The airplane's inventory
+        2. The airplane's status
+        3. The airplane's inventory
     """
 
     def __init__(self):

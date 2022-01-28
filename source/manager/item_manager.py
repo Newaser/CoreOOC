@@ -3,6 +3,7 @@ from copy import copy
 from cocos.text import Label
 
 from db.item import ItemQuery, get_category_list
+from db.recipe import RecipeQuery
 from db.unpacking import UnpackingQuery
 from public.defaults import Player, Styles
 from public.errors import UnaffordableError, ExcessiveRemovingError, ItemOverflowError, AlreadyDoneError
@@ -54,17 +55,34 @@ class ItemManager:
         for key in item_id_list:
             self.items[key] = 0
 
-    def has(self, item_id):
-        """If there's any item identified 'item_id'
+    def has(self, arg) -> bool:
+        """If there's any specific item or specific item group
         """
-        return self.items[item_id] > 0
+        # 'arg' is item ID
+        if type(arg) == str:
+            item_id = arg
+            return item_id in self.items.keys() and \
+                self.items[item_id] > 0
+        # 'arg' is item ID-amount dictionary
+        elif type(arg) == dict:
+            item_dict = arg
+            for item_id in item_dict.keys():
+                if item_id not in self.items.keys():
+                    return False
+            for item_id, amount in item_dict.items():
+                if amount > self.items[item_id]:
+                    return False
 
-    def airplane_full(self, player_name):
+            return True
+        else:
+            raise TypeError("The type of the argument must be one of: IntType, DictType")
+
+    def airplane_full(self, player_name) -> bool:
         """If a player's airplane has been fully equipped
         """
         return None not in self.airplane_equipments[player_name]
 
-    def airplane_empty(self, player_name):
+    def airplane_empty(self, player_name) -> bool:
         """If a player's airplane doesn't have any equipments
         """
         for equip_id in self.airplane_equipments[player_name]:
@@ -272,3 +290,30 @@ class ItemManager:
 
         # PICK the dropped item to the inventory
         self.add(dropped_item_id)
+
+    def forage(self, item_id):
+        """Forage an equipment using materials according to a specific blueprint
+        :return :
+            1. If the blueprints identified as 'item_id' runs out, return False; else True;
+            2. The outcome's ID
+        """
+        assert self.has(item_id)
+
+        # the RECIPE of the blueprint
+        recipe = RecipeQuery(item_id)
+
+        # if the MATERIAL is not sufficient
+        if not self.has(recipe.get_material_dict()):
+            raise UnaffordableError
+
+        # REMOVE the blueprint
+        self.remove(item_id)
+
+        # REMOVE the raw materials
+        for material_id, amount in recipe.get_material_dict().items():
+            self.remove(material_id, amount)
+
+        # ADD the outcome
+        self.add(recipe.outcome_id)
+
+        return self.has(item_id), recipe.outcome_id
