@@ -18,6 +18,9 @@ class Statistics:
     #: If the main game has been started
     has_started = False
 
+    #: the present player to equip/unequip equipments on the inventory
+    present_player = 'player1'
+
 
 # Statistics object
 stat = Statistics()
@@ -25,7 +28,7 @@ stat = Statistics()
 # Managers
 sm = SettingManager(stat.recorder.settings)
 pm = ProgressManager(stat.recorder.progress)
-im = ItemManager(stat.recorder.items)
+im = ItemManager(stat.recorder.items, stat.recorder.airplane_equipments)
 
 
 # Segments of Statistics

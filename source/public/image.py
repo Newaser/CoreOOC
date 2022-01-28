@@ -20,11 +20,18 @@ class GUI:
         blueprint = resource.image("blueprint.png")
         chest = resource.image("chest.png")
         __coin_set = resource.image("coin_set.png")
+        __blue_plane = resource.image("blue_plane.png")
+        __red_plane = resource.image("red_plane.png")
 
     except resource.ResourceNotFoundException as e:
         raise SystemExit(e)
 
-    coin_anim = Animation.from_image_sequence(ImageGrid(__coin_set, 4, 1), 0.2)
+    coin_animation = Animation.from_image_sequence(ImageGrid(__coin_set, 4, 1), 0.1)
+
+    DICT = {
+        'blue_plane': __blue_plane,
+        'red_plane': __red_plane,
+    }
 
 
 class Items:

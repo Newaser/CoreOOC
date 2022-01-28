@@ -29,6 +29,7 @@ class CategoryMenu(GraphicalMenu):
 
         # About behavior
         self.default_activated = 0
+        self.call_func_on_enter = False
 
         # Create the menu
         self.create_menu()
@@ -44,7 +45,6 @@ class CategoryMenu(GraphicalMenu):
 
     def on_enter(self):
         super(CategoryMenu, self).on_enter()
-        self.on_equipment()
 
     def on_quit(self):
         black_field_transition()

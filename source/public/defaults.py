@@ -21,6 +21,16 @@ class Color:
     GOLD = 255, 215, 0
     DARK_ORANGE = 255, 140, 0
 
+    # Red Tone
+    DARK_RED = 139, 0, 0
+
+    # Blue Tone
+    DARK_SLATE_GRAY = 47, 79, 79
+    MIDNIGHT_BLUE = 25, 25, 112
+    DARK_BLUE = 0, 0, 139
+    NAVY = 0, 0, 128
+    ROYAL_BLUE = 65, 105, 225
+
 
 class Font:
     FAMILY_NAME = {
@@ -31,6 +41,7 @@ class Font:
         "站酷高端黑": "huxiaobo-gdh",
         '汉仪南宫体简': 'HYNanGongJ',
         "BRITANNIC": "Britannic Bold",
+        "方正准圆简体": "FZZhunYuan-M02S",
     }
 
 
@@ -44,6 +55,11 @@ class Window:
     WIDTH = 1280
     HEIGHT = 720
     SIZE = WIDTH, HEIGHT
+
+
+class Slot:
+    DEFAULT_WIDTH = 67
+    DEFAULT_HEIGHT = 67
 
 
 class Z:
@@ -65,8 +81,25 @@ class Player:
     # Multiples
     SPEED_MUL = 3
 
-    # Player
+    # Player Status
     DEFAULT_HP = 100
+
+    # Player properties
+    DEFAULT_MEMBERS = ['player1', 'player2']
+
+    NICKNAME = {
+        'player1': 'Newaser',
+        'player2': '玩家2',
+    }
+
+    # The image of airplanes
+    DEFAULT_AIRPLANE = {
+        'player1': 'blue_plane',
+        'player2': 'red_plane',
+    }
+
+    # The equipments of the players' airplanes
+    DEFAULT_EQUIPMENTS = {member: [None] * 3 for member in DEFAULT_MEMBERS}
 
 
 class Settings:
@@ -166,6 +199,16 @@ class Styles:
         'color': (*Color.BLACK, 255),
         'dpi': 96,
     }
+    MONEY_NUMBER_FONT = {
+        'font_name': Font.FAMILY_NAME['BRITANNIC'],
+        'font_size': 36,
+        'bold': True,
+        'italic': False,
+        'anchor_y': 'center',
+        'anchor_x': 'left',
+        'color': (*Color.BLACK, 255),
+        'dpi': 96,
+    }
     INFO_NAME_FONT = {
         'font_name': Font.FAMILY_NAME['方正粗黑宋简体'],
         'font_size': 14,
@@ -192,6 +235,16 @@ class Styles:
         'multiline': True,
         'dpi': 96,
     }
+    PLAYER_CARD_NAME_FONT = {
+        'font_name': Font.FAMILY_NAME['方正准圆简体'],
+        'font_size': 32,
+        'bold': False,
+        'italic': False,
+        'anchor_y': 'top',
+        'anchor_x': 'center',
+        'color': (*Color.WHITE, 255),
+        'dpi': 96,
+    }
 
     # SHAPE STYLES
     WARNING_PANEL_RECT = {
@@ -203,6 +256,16 @@ class Styles:
         'border_thickness': 5,
         'body_rgba': (*Color.BLACK, 178),
         'border_rgba': (*Color.KHAKI, 255),
+    }
+    PLAYER_CARD_BODY_RECT = {
+        'border_thickness': 7,
+        'body_rgba': (*Color.BLACK, 211),
+        'border_rgba': (*Color.DARK_RED, 230),
+    }
+    PLAYER_CARD_FRAME_RECT = {
+        'border_thickness': 7,
+        'body_rgba': (*Color.WHITE_SMOKE, 0),
+        'border_rgba': (*Color.GOLD, 255),
     }
     SLOT_SHAPE = {
         'shape_name': 'Rect',
@@ -245,10 +308,9 @@ class Styles:
 
     # SOUNDS
     INVENTORY_SOUNDS = {
-        "selected": 'drop',
+        "selected": 'water_drop',
         "unselected": None,
         "activated": 'dull_activate',
         "inactivated": None,
     }
-
     NOTIFYING_SOUND = 'ring_knock'

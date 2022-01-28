@@ -1,3 +1,5 @@
+import random
+
 from cocos.scene import Scene
 
 from public.defaults import Z
@@ -24,4 +26,5 @@ class InventoryScene(Scene):
 
     def on_enter(self):
         super(InventoryScene, self).on_enter()
-        music.play('going_deep', 0.1, True)
+        random_bgm = 'inventory_bgm' + str(random.choice(range(4)))
+        music.play(random_bgm, 0.1, True)

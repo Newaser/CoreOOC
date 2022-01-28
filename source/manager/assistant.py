@@ -10,12 +10,20 @@ from cocos.text import Label
 from public.actions import *
 from public.audio import sound
 from public.defaults import Z, Window, Styles
+from public.errors import MeaninglessError
+from public.image import GUI
 from public.shapes import BorderedShape
+from public.stat import im
+
+__all__ = ['Assistant']
 
 
 class Assistant(object):
     """The assistant of the director, an instance of :class:`cocos.director.Director`
     """
+    # Singleton money panel
+    __moneyPanel = None
+
     @classmethod
     def warn(cls, msg, duration=2):
         """Add a warning panel to current scene with a specific massage
@@ -42,6 +50,28 @@ class Assistant(object):
 
         # RUN the notifier
         notifier.start_notifying()
+
+    @classmethod
+    def show_money(cls):
+        """Show the money the play possesses
+        """
+        # if no singleton, create the singleton instance
+        if cls.__moneyPanel is None:
+            cls.__moneyPanel = MoneyPanel()
+
+        # ADD the money panel to the current SCENE
+        director.scene.add(cls.__moneyPanel, z=Z.HUD)
+
+    @classmethod
+    def update_money(cls):
+        """Update the money showing on the screen
+        """
+        if cls.__moneyPanel is None or \
+                cls.__moneyPanel.parent != director.scene or \
+                not cls.__moneyPanel.visible:
+            raise MeaninglessError
+
+        cls.__moneyPanel.update()
 
 
 class WarningPanel(Layer):
@@ -320,3 +350,74 @@ class ReceiptNotifier(Layer):
             """Form the components as a list
             """
             return [self.background_panel, self.item_icon, self.amount_label]
+
+
+class MoneyPanel(Layer):
+    """A panel displays the money that the play possesses
+    """
+
+    def __init__(self):
+        super(MoneyPanel, self).__init__()
+
+        # LAYOUT STUFF
+
+        #: the center of coin icon
+        self.coin_center = 76, 646
+
+        #: center left of the money number
+        self.number_center_left = self.coin_center[0] + 67 / 2 + 10, self.coin_center[1]
+
+        # FUNCTIONAL STUFF
+
+        # COMPONENT STUFF
+
+        #: a coin icon
+        self.coin = None
+
+        #: a number indicates the money possessed
+        self.number = None
+
+        # EXECUTIONS
+        self._build()
+
+    def _build(self):
+        """Build components
+        """
+        # BUILD coin icon Sprite
+        self.coin = Sprite(GUI.coin_animation)
+        self.coin.position = self.coin_center
+
+        # BUILD number Label
+        self.number = Label('', **Styles.MONEY_NUMBER_FONT)
+        self.number.position = self.number_center_left
+
+        # ADD
+        self.add(self.coin)
+        self.add(self.number)
+
+    def on_enter(self):
+        self.update()
+
+    def on_exit(self):
+        super(MoneyPanel, self).on_exit()
+
+        # UNHIDE self
+        self.unhide()
+
+    def update(self):
+        """Update the number of the money
+        """
+        self.number.element.text = str(im.items['C0'])
+
+    def hide(self):
+        """Set the panel invisible
+        """
+        if self.visible:
+            self.visible = False
+
+    def unhide(self):
+        """Set the panel visible and update the number
+        """
+        if not self.visible:
+            self.update()
+            self.visible = True

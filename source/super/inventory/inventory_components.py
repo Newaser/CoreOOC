@@ -145,6 +145,7 @@ class OptionCardMenu(VerticalMenu):
         self._option_dict = {
             '': MenuItem('', None),
             '查看': MenuItem('查看', emitter.check),
+            '*查看': MenuItem('查看', emitter.remote_check),
             '出售': MenuItem('出售', emitter.sell),
             '全部出售': MenuItem('全部出售', emitter.sell_all),
             '装上': MenuItem('装上', emitter.equip),

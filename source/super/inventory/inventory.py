@@ -5,6 +5,7 @@ from pyglet.window import mouse
 from db.item import ItemQuery
 from public.audio import sound
 from public.defaults import Z, SAVE_PATH
+from public.defaults import Slot as DeSlot
 from public.errors import ItemOverflowError
 from public.events import emitter
 from manager.assistant import Assistant
@@ -55,7 +56,7 @@ class Inventory(Layer):
         #: list of slots
         self.slots = []
 
-        #: list of triples concerning items: [(item_id, item_amount, item_sprite)] * n
+        #: list of triples concerning items: [(item_id, item_amount_label, item_icon_sprite)] * n
         self.item_triples = []
 
         #: item info card
@@ -77,13 +78,25 @@ class Inventory(Layer):
     def width(self):
         """Overall width of the inventory
         """
-        return self.slots[0].width * self.max_column + self.spacing[0] * (self.number - 1)
+        # if the slot list is empty
+        if bool(self.slots):
+            unit_width = self.slots[0].width
+        else:
+            unit_width = DeSlot.DEFAULT_WIDTH
+
+        return unit_width * min(self.number, self.max_column) + self.spacing[0] * (self.number - 1)
 
     @property
     def height(self):
         """Overall height of the inventory
         """
-        return self.slots[0].height * self.rows + self.spacing[1] * (self.number - 1)
+        # if the slot list is empty
+        if bool(self.slots):
+            unit_height = self.slots[0].height
+        else:
+            unit_height = DeSlot.DEFAULT_HEIGHT
+
+        return unit_height * self.rows + self.spacing[1] * (self.number - 1)
 
     @property
     def size(self):
@@ -107,6 +120,9 @@ class Inventory(Layer):
         self._unselect_slot()
         self._inactivate_slot()
         self._update_items()
+
+        # Show MONEY
+        Assistant.show_money()
 
     def on_exit(self):
         super(Inventory, self).on_exit()
@@ -288,9 +304,13 @@ class Inventory(Layer):
     def on_quit():
         black_field_transition()
 
-    def on_check(self):
+    def on_check(self, item_id):
+        # SET the id of item to check
+        if item_id is None:
+            item_id = self.activated_item_id
+
         # OPEN the info card with item_id
-        self.info_card.open(self.activated_item_id)
+        self.info_card.open(item_id)
 
         # INACTIVATE the slot
         self._inactivate_slot()
@@ -300,6 +320,7 @@ class Inventory(Layer):
         still_have, coins_obtained = im.sell(self.activated_item_id, num)
         Assistant.notify([(ItemQuery('C0').get_sprite(), coins_obtained)], sound_play=False)
         self._update_items()
+        Assistant.update_money()
 
         # SOUND
         sound.play('sell_buy_item')
@@ -327,6 +348,7 @@ class Inventory(Layer):
         still_have, tuple_list = im.unpack(self.activated_item_id, num)
         Assistant.notify(tuple_list)
         self._update_items()
+        Assistant.update_money()
 
         # if the type of chest runs out
         if not still_have:

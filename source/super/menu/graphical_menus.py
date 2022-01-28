@@ -31,6 +31,7 @@ class GraphicalMenu(Layer):
         # About behavior
         self.max_activated = 1
         self.default_activated = None
+        self.call_func_on_enter = True
 
         # About layout -assigned automatically later
         self.number = 1
@@ -93,7 +94,7 @@ class GraphicalMenu(Layer):
 
         self.activated_idx = idx
         self.items[idx].is_activated = True
-        self.items[idx].on_activated(enter)
+        self.items[idx].on_activated(enter, self.call_func_on_enter)
 
     def _inactivate_item(self):
         if self.activated_idx is None:
@@ -198,10 +199,11 @@ class PicMenuItem(Sprite):
 
         self._sound_and_effect('unselected')
 
-    def on_activated(self, enter=False):
+    def on_activated(self, enter=False, enter_call=True):
         self._sound_and_effect('activated', enter)
 
-        self.callback_func()
+        if not enter or (enter and enter_call):
+            self.callback_func()
 
     def on_inactivated(self):
         self._sound_and_effect('inactivated')
@@ -240,10 +242,11 @@ class ShapeMenuItem(BorderedShape):
 
         self._sound_and_effect('unselected')
 
-    def on_activated(self, enter=False):
+    def on_activated(self, enter=False, enter_call=True):
         self._sound_and_effect('activated', enter)
 
-        self.callback_func()
+        if not enter or (enter and enter_call):
+            self.callback_func()
 
     def on_inactivated(self):
         self._sound_and_effect('inactivated')

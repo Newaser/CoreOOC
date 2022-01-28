@@ -1,17 +1,20 @@
+from copy import copy
+
 from cocos.text import Label
 
 from db.item import ItemQuery, get_category_list
 from db.unpacking import UnpackingQuery
-from public.defaults import Styles
-from public.errors import UnaffordableError, ExcessiveRemovingError
+from public.defaults import Player, Styles
+from public.errors import UnaffordableError, ExcessiveRemovingError, ItemOverflowError, AlreadyDoneError
 
 
 class ItemManager:
     """Manage items that the player possess with a given item_id-item_number dictionary.
     """
 
-    def __init__(self, items):
+    def __init__(self, items, airplane_equipments):
         self.items = items
+        self.airplane_equipments = airplane_equipments
 
     def add(self, item_id, num=1):
         """Add a specific amount of items
@@ -55,6 +58,57 @@ class ItemManager:
         """If there's any item identified 'item_id'
         """
         return self.items[item_id] > 0
+
+    def airplane_full(self, player_name):
+        """If a player's airplane has been fully equipped
+        """
+        return None not in self.airplane_equipments[player_name]
+
+    def airplane_empty(self, player_name):
+        """If a player's airplane doesn't have any equipments
+        """
+        for equip_id in self.airplane_equipments[player_name]:
+            if equip_id is not None:
+                return False
+        return True
+
+    def airplane_add(self, player_name, item_id):
+        """Add an item to a player's airplane
+        """
+        if player_name not in Player.DEFAULT_MEMBERS:
+            raise ValueError("Unknown player")
+        # if the airplane has already been fully equipped
+        if self.airplane_full(player_name):
+            raise ItemOverflowError
+        # if such equipment has already been equipped to the airplane
+        if item_id in self.airplane_equipments[player_name]:
+            raise AlreadyDoneError
+
+        for idx, value in enumerate(self.airplane_equipments[player_name]):
+            if value is None:
+                self.airplane_equipments[player_name][idx] = item_id
+                break
+
+    def airplane_remove(self, player_name, idx):
+        """Remove an item from a player's airplane via index
+
+        Example::
+
+            # remove the first equipment of player1's airplane
+            removed_item_id = item_manager.airplane_remove('player1', 0)
+
+        :return: the id of the removed item
+        """
+        if player_name not in Player.DEFAULT_MEMBERS:
+            raise ValueError("Unknown player")
+        if self.airplane_equipments[player_name][idx] is None:
+            raise AlreadyDoneError(f"The slot indexed '{idx}' is already empty")
+
+        removed_item_id = copy(self.airplane_equipments[player_name][idx])
+
+        self.airplane_equipments[player_name][idx] = None
+
+        return removed_item_id
 
     def goods(self):
         """Return a list of item_id of items that is buyable
@@ -177,3 +231,44 @@ class ItemManager:
             tuples.append((ItemQuery(treasure_id).get_sprite(), amount))
 
         return self.has(item_id), tuples
+
+    def equip(self, player_name, item_id):
+        """Equip an equipment to a player's airplane
+
+        Example::
+
+            # equip a nuclear artillery to player1's airplane
+            item_manager.equip('player1', 'Eq3')
+        """
+        # ERRORS
+        if player_name not in Player.DEFAULT_MEMBERS:
+            raise ValueError("Unknown player")
+        if ItemQuery(item_id).category != 'equipment':
+            raise ValueError("Only equipment can be equipped")
+        if not self.has(item_id):
+            raise ValueError("Such item not enough")
+
+        # ADD the equipment to the airplane
+        self.airplane_add(player_name, item_id)
+
+        # REMOVE the equipment from the inventory
+        self.remove(item_id)
+
+    def unequip(self, player_name, idx):
+        """Unequip the equipment in specific slot of a player's airplane
+
+        Example::
+
+            # unequip the equipment in the first slot of player1's airplane
+            item_manager.unequip('player1', 0)
+        """
+        if player_name not in Player.DEFAULT_MEMBERS:
+            raise ValueError("Unknown player")
+        if not 0 <= idx < len(self.airplane_equipments[player_name]):
+            raise IndexError(f"The index '{idx}' exceeds")
+
+        # DROP the item at index 'idx' from the airplane
+        dropped_item_id = self.airplane_remove(player_name, idx)
+
+        # PICK the dropped item to the inventory
+        self.add(dropped_item_id)

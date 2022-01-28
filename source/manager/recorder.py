@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from public.defaults import Settings, Progress, SAVE_PATH
+from public.defaults import Settings, Progress, Player, SAVE_PATH
 from db.item import get_formatted_item_dict
 
 
@@ -32,15 +32,20 @@ class Recorder:
 
         self.progress = {}
 
-        # Dictionary maps item_id with item number that the player possess
+        # dictionary maps item_id with item number that the player possess
         self.items = {}
+
+        # the equipments of the players' airplanes
+        # it formed as {player_name: (equipment_id1, equipment_id2, equipment_id3)}
+        self.airplane_equipments = {}
 
         self.read(SAVE_PATH)
 
     def __repr__(self):
         return str(self.settings) + "\n" + \
                str(self.progress) + "\n" + \
-               str(self.items) + "\n"
+               str(self.items) + "\n" + \
+               str(self.airplane_equipments)
 
     def __is_empty(self):
         """If all statistics empty
@@ -55,6 +60,9 @@ class Recorder:
         self.settings = deepcopy(Settings.DEFAULT)
         self.progress = deepcopy(Progress.DEFAULT)
         self.items = get_formatted_item_dict()
+        self.airplane_equipments = deepcopy(Player.DEFAULT_EQUIPMENTS)
+        # TODO: Create a dynamic method to formatting the
+        #  airplane_equipments dictionary more intelligently
 
         self.write(SAVE_PATH)
 
@@ -73,6 +81,7 @@ class Recorder:
         self.settings = eval(content[0])
         self.progress = eval(content[1])
         self.items = eval(content[2])
+        self.airplane_equipments = eval(content[3])
 
     def write(self, path):
         """Submit the local data to external save files in the form of String
